@@ -14,4 +14,10 @@ public interface TaskRepository {
      * @return список пользователей.
      */
     List<Task> findAll();
+
+    /**
+     * Создать задачу.
+     * @return список пользователей.
+     */
+    Task add(Task task);
 }

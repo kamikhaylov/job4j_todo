@@ -6,9 +6,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.service.TaskService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -39,5 +42,32 @@ public class TaskController {
 
         LOGGER.info("Результат вызова сервиса посисках всех задач: " + tasks);
         return "tasks";
+    }
+
+    /**
+     * Страница добавления новой задачи
+     * @return возвращает страницу добавления новой задачи
+     */
+    @GetMapping("/createTask")
+    public String createTask() {
+        LOGGER.info("Вызов сервиса поиска всех задач");
+
+        return "createTask";
+    }
+
+    /**
+     * Добавление новой задачи
+     * @param task - задача
+     * @return возвращает страницу со списком всех заданий
+     */
+    @PostMapping("/addTask")
+    public String addTask(@ModelAttribute Task task) {
+        LOGGER.info("Вызов сервиса добавления новой задачи");
+
+        task.setCreated(LocalDateTime.now());
+        Task result = service.add(task);
+
+        LOGGER.info("Добавленная задача: " + result);
+        return "redirect:/tasks";
     }
 }

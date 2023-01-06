@@ -27,6 +27,7 @@ public class TodoTaskRepository implements TaskRepository {
      * Список задач.
      * @return список пользователей.
      */
+    @Override
     public List<Task> findAll() {
         LOGGER.info("Запущен поиск всех задач в БД");
 
@@ -38,5 +39,23 @@ public class TodoTaskRepository implements TaskRepository {
 
         LOGGER.info("Поиск всех задач в БД завершен, найденные задачи: " + tasks);
         return tasks;
+    }
+
+    /**
+     * Создать задачу.
+     * @return список пользователей.
+     */
+    @Override
+    public Task add(Task task) {
+        LOGGER.info("Добавление новой задачи в БД");
+
+        Session session = sf.openSession();
+        session.beginTransaction();
+        session.save(task);
+        session.getTransaction().commit();
+        session.close();
+
+        LOGGER.info("Задача в БД добавлена: " + task);
+        return task;
     }
 }

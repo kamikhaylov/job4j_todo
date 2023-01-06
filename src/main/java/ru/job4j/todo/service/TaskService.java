@@ -26,4 +26,12 @@ public class TaskService {
     public List<Task> findAllOrderById() {
         return repository.findAll();
     }
+
+    /**
+     * Добавление новой задачи.
+     * @return добавленая задача.
+     */
+    public Task add(Task task) {
+        return repository.add(task);
+    }
 }
