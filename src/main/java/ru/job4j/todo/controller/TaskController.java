@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.service.TaskService;
@@ -37,10 +38,10 @@ public class TaskController {
     public String tasks(Model model) {
         LOGGER.info("Вызов сервиса поиска всех задач");
 
-        List<Task> tasks = service.findAllOrderById();
+        List<Task> tasks = service.findAll();
         model.addAttribute("tasks", tasks);
 
-        LOGGER.info("Результат вызова сервиса посисках всех задач: " + tasks);
+        LOGGER.info("Результат вызова сервиса поиска всех задач: " + tasks);
         return "tasks";
     }
 
@@ -68,6 +69,38 @@ public class TaskController {
         Task result = service.add(task);
 
         LOGGER.info("Добавленная задача: " + result);
+        return "redirect:/tasks";
+    }
+
+    /**
+     * Детальная информация по задаче
+     * @param model - модель данных
+     * @param id - идентификатор задачи
+     * @return возвращает страницу с детальной информации по задаче
+     */
+    @GetMapping("/task/{taskId}")
+    public String task(Model model, @PathVariable("taskId") int id) {
+        LOGGER.info("Вызов сервиса получения подробной информации по задаче");
+
+        Task task = service.findById(id).get();
+        model.addAttribute("task", task);
+
+        LOGGER.info("Сервис получения подробной информации по задаче выполнен: " + task);
+        return "task";
+    }
+
+    /**
+     * Устанавливает признак выполнения зачачи
+     * @param model - модель данных
+     * @param id - идентификатор задачи
+     * @return возвращает страницу со списком всех задач
+     */
+    @GetMapping("/done/{taskId}")
+    public String done(Model model, @PathVariable("taskId") int id) {
+        LOGGER.info("Вызов сервиса выполнения задачи");
+        Task task = service.findById(id).get();
+        task.setDone(true);
+        service.update(task);
         return "redirect:/tasks";
     }
 }

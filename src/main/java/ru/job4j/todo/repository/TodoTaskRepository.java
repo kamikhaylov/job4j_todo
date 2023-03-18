@@ -9,7 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.Task;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Взаимодействие с БД заданий
@@ -24,7 +26,7 @@ public class TodoTaskRepository implements TaskRepository {
     private final SessionFactory sf;
 
     /**
-     * Список задач.
+     * Получение списка задач из БД.
      * @return список пользователей.
      */
     @Override
@@ -42,8 +44,27 @@ public class TodoTaskRepository implements TaskRepository {
     }
 
     /**
+     * Получение задачи по ID.
+     * @return задача.
+     */
+    @Override
+    public Optional<Task> findById(int id) {
+        LOGGER.info("Запущен поиск задачи по Id");
+
+        Session session = sf.openSession();
+        Optional<Task> task = session
+                .createQuery("FROM Task t WHERE t.id = :fId", Task.class)
+                .setParameter("fId", id)
+                .uniqueResultOptional();
+        session.close();
+
+        LOGGER.info("Поиск задачи по Id в БД завершен, найденная задача: " + Optional.of(task));
+        return task;
+    }
+
+    /**
      * Создать задачу.
-     * @return список пользователей.
+     * @return задача.
      */
     @Override
     public Task add(Task task) {
@@ -57,5 +78,30 @@ public class TodoTaskRepository implements TaskRepository {
 
         LOGGER.info("Задача в БД добавлена: " + task);
         return task;
+    }
+
+    /**
+     * Обновить задачу.
+     */
+    @Override
+    public void update(Task task) {
+        LOGGER.info("Обновление задачи в БД: " + task);
+
+        Session session = sf.openSession();
+        try {
+            session.beginTransaction();
+            session.createQuery("UPDATE Task SET description = :fDescription, created = :fCreated, done = :fDone "
+                    + "WHERE id = :fId")
+                    .setParameter("fDescription", task.getDescription())
+                    .setParameter("fCreated", task.getCreated())
+                    .setParameter("fDone", task.getDone())
+                    .setParameter("fId", task.getId())
+                    .executeUpdate();
+            session.getTransaction().commit();
+            session.close();
+        } catch (Exception e) {
+            LOGGER.error(Arrays.toString(e.getStackTrace()));
+            session.getTransaction().rollback();
+        }
     }
 }

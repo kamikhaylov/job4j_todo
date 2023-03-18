@@ -6,6 +6,7 @@ import ru.job4j.todo.model.Task;
 import ru.job4j.todo.repository.TaskRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Сервис задач
@@ -20,11 +21,19 @@ public class TaskService {
     }
 
     /**
-     * Список задач отсортированных по id.
+     * Получение списка задач.
      * @return список пользователей.
      */
-    public List<Task> findAllOrderById() {
+    public List<Task> findAll() {
         return repository.findAll();
+    }
+
+    /**
+     * Получение задачи по ID.
+     * @return задача.
+     */
+    public Optional<Task> findById(int id) {
+        return repository.findById(id);
     }
 
     /**
@@ -33,5 +42,12 @@ public class TaskService {
      */
     public Task add(Task task) {
         return repository.add(task);
+    }
+
+    /**
+     * Обновить задачу.
+     */
+    public void update(Task task) {
+        repository.update(task);
     }
 }

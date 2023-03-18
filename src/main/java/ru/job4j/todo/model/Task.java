@@ -30,5 +30,5 @@ public class Task {
     /** Дата создания */
     private LocalDateTime created;
     /** Выполнено */
-    private boolean done;
+    private Boolean done;
 }

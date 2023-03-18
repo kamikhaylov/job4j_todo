@@ -32,47 +32,28 @@
                 </div>
             </nav>
             <br>
-            <a th:href="@{/tasks}">
-                <button type="button" class="btn btn-secondary">Все</button>
+            <a th:href="@{|/done/${task.id}|}">
+                <button type="button" class="btn btn-outline-secondary">Выполнено</button>
             </a>
-            <a th:href="@{/newTasks}">
-                <button type="button" class="btn btn-outline-secondary">Новые</button>
+            <a th:href="@{/update}">
+                <button type="button" class="btn btn-outline-secondary">Отредактировать</button>
             </a>
-            <a th:href="@{/doneTasks}">
-                <button type="button" class="btn btn-outline-secondary">Выполненные</button>
-            </a>
-            <a th:href="@{/createTask}">
-                <button type="button" class="btn btn-primary">Добавить задание</button>
+            <a th:href="@{/delete}">
+                <button type="button" class="btn btn-outline-secondary">Удалить</button>
             </a>
             <br><br>
             <div class="row">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Описание</th>
-                        <th scope="col">Дата</th>
-                        <th scope="col">Отметка о выполнении</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="task: ${tasks}">
-                            <td th:text="${task.id}"/>
-                            <td width="55%">
-                                <a th:href="@{|/task/${task.id}|}">
-                                    <span th:text="${task.description}"></span>
-                                </a>
-                            </td>
-                            <td width="20%" th:text="${#temporals.format(task.created, 'dd.MM.yyyy HH:mm:ss')}"/>
-                            <td width="20%" th:if="${task.done == true}">
-                                <i class="fa fa-check-square-o"></i>
-                            </td>
-                            <td width="20%" th:if="${task.done == false}">
-                                <i class="fa fa-square-o"></i>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="card" style="width: 100%">
+                    <div class="card-header">
+                        Подробная информация
+                    </div>
+                    <div class="card-body">
+                        <div>Идентификатор: <span th:text="${task.id}"></span></div>
+                        <div>Описание: <span th:text="${task.description}"></span></div>
+                        <div>Дата: <span th:text="${#temporals.format(task.created, 'dd.MM.yyyy HH:mm:ss')}"></span></div>
+                        <div>Выполнено: <span th:text="${task.done}"></span></div>
+                    </div>
+                </div>
             </div>
         </div>
     </body>
