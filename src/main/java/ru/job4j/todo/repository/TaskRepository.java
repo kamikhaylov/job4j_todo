@@ -30,7 +30,6 @@ public interface TaskRepository {
 
     /**
      * Обновить задачу.
-     * @return задача.
      */
     void update(Task task);
 }

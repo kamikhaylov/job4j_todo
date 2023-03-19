@@ -66,6 +66,7 @@ public class TaskController {
         LOGGER.info("Вызов сервиса добавления новой задачи");
 
         task.setCreated(LocalDateTime.now());
+        task.setDone(false);
         Task result = service.add(task);
 
         LOGGER.info("Добавленная задача: " + result);
@@ -91,16 +92,44 @@ public class TaskController {
 
     /**
      * Устанавливает признак выполнения зачачи
-     * @param model - модель данных
      * @param id - идентификатор задачи
      * @return возвращает страницу со списком всех задач
      */
     @GetMapping("/done/{taskId}")
-    public String done(Model model, @PathVariable("taskId") int id) {
+    public String done(@PathVariable("taskId") int id) {
         LOGGER.info("Вызов сервиса выполнения задачи");
         Task task = service.findById(id).get();
         task.setDone(true);
         service.update(task);
+        return "redirect:/tasks";
+    }
+
+    /**
+     * Редактирование задачи
+     * @param model - модель данных
+     * @param id - идентификатор задачи
+     * @return возвращает страницу редактирования задачи
+     */
+    @GetMapping("/task/{taskId}/update")
+    public String formUpdateTask(Model model, @PathVariable("taskId") int id) {
+        LOGGER.info("Вызов сервиса обновления информации по задаче");
+
+        model.addAttribute("task", service.findById(id).get());
+        return "updateTask";
+    }
+
+    /**
+     * Устанавливает признак выполнения зачачи
+     * @param task - задача
+     * @return возвращает страницу со списком всех задач
+     */
+    @PostMapping("/update")
+    public String update(@ModelAttribute Task task) {
+        LOGGER.info("Сохранение отредактированной задачи: " + task);
+
+        service.update(task);
+
+        LOGGER.info("Сервис обновления информации по задаче выполнен");
         return "redirect:/tasks";
     }
 }

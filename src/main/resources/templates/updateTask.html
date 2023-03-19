@@ -32,33 +32,42 @@
                 </div>
             </nav>
             <br>
-            <a th:href="@{|/done/${task.id}|}">
-                <button type="button" class="btn btn-outline-secondary">Выполнено</button>
+            <a th:href="@{/tasks}">
+                <button type="button" class="btn btn-secondary">Все</button>
             </a>
-            <a th:href="@{|/task/${task.id}/update|}">
-                <button type="button" class="btn btn-outline-secondary">Отредактировать</button>
+            <a th:href="@{/newTasks}">
+                <button type="button" class="btn btn-outline-secondary">Новые</button>
             </a>
-            <a th:href="@{/delete}">
-                <button type="button" class="btn btn-outline-secondary">Удалить</button>
+            <a th:href="@{/doneTasks}">
+                <button type="button" class="btn btn-outline-secondary">Выполненные</button>
+            </a>
+            <a th:href="@{/createTask}">
+                <button type="button" class="btn btn-primary">Добавить задание</button>
             </a>
             <br><br>
             <div class="row">
                 <div class="card" style="width: 100%">
                     <div class="card-header">
-                        Подробная информация
+                        Редактирование задания
                     </div>
                     <div class="card-body">
-                        <div>Идентификатор: <span th:text="${task.id}"></span></div>
-                        <div>Описание: <span th:text="${task.description}"></span></div>
-                        <div>Дата: <span th:text="${#temporals.format(task.created, 'dd.MM.yyyy HH:mm:ss')}"></span></div>
-                        <div>Выполнено:
-                            <td th:if="${task.done == true}">
-                                <i class="fa fa-check-square-o"></i>
-                            </td>
-                            <td th:if="${task.done == false}">
-                                <i class="fa fa-square-o"></i>
-                            </td>
-                        </div>
+                        <form th:action="@{/update}" method="POST" enctype="multipart/form-data" th:object="${task}">
+                            <input type="hidden" required name="id" th:field="*{id}"/>
+                            <input type="hidden" required name="created" th:field="*{created}"/>
+                            <div class="form-group">
+                                <label for="description">Описание</label>
+                                <input type="text" class="form-control" required name="description" id="description" th:field="*{description}">
+                            </div>
+                            <div class="form-group">
+                                <label for="done">Отметка о выполнение</label>
+                                <br>
+                                <input type="checkbox" name="done" id="done" th:field="*{done}">
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-3">Сохранить</button>
+                            <a th:href="@{|/task/${task.id}|}">
+                                <button type="button" class="btn btn-primary mt-3">Отменить</button>
+                            </a>
+                        </form>
                     </div>
                 </div>
             </div>
