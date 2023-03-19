@@ -22,10 +22,26 @@ public class TaskService {
 
     /**
      * Получение списка задач.
-     * @return список пользователей.
+     * @return список задач.
      */
     public List<Task> findAll() {
         return repository.findAll();
+    }
+
+    /**
+     * Получение списка новых задач.
+     * @return список задач.
+     */
+    public List<Task> findNews() {
+        return repository.findNew();
+    }
+
+    /**
+     * Получение списка выполненных задач.
+     * @return список задач.
+     */
+    public List<Task> findCompleted() {
+        return repository.findCompleted();
     }
 
     /**

@@ -12,9 +12,21 @@ public interface TaskRepository {
 
     /**
      * Получение списка задач.
-     * @return список пользователей.
+     * @return список задач.
      */
     List<Task> findAll();
+
+    /**
+     * Получение списка новых задач.
+     * @return список задач.
+     */
+    List<Task> findNew();
+
+    /**
+     * Получение списка выполненных задач.
+     * @return список задач.
+     */
+    List<Task> findCompleted();
 
     /**
      * Получение задачи по ID.

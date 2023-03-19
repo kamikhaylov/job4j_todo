@@ -46,12 +46,44 @@ public class TaskController {
     }
 
     /**
+     * Страница со списком новых заданий
+     * @param model - модель данных
+     * @return возвращает страницу со списком новых заданий
+     */
+    @GetMapping("/newTasks")
+    public String newTasks(Model model) {
+        LOGGER.info("Вызов сервиса поиска новых задач");
+
+        List<Task> tasks = service.findNews();
+        model.addAttribute("tasks", tasks);
+
+        LOGGER.info("Результат вызова сервиса поиска новых задач: " + tasks);
+        return "newTasks";
+    }
+
+    /**
+     * Страница со списком выполненных заданий
+     * @param model - модель данных
+     * @return возвращает страницу со списком всех заданий
+     */
+    @GetMapping("/doneTasks")
+    public String doneTasks(Model model) {
+        LOGGER.info("Вызов сервиса поиска выполненных задач");
+
+        List<Task> tasks = service.findCompleted();
+        model.addAttribute("tasks", tasks);
+
+        LOGGER.info("Результат вызова сервиса поиска выполненных задач: " + tasks);
+        return "doneTasks";
+    }
+
+    /**
      * Страница добавления новой задачи
      * @return возвращает страницу добавления новой задачи
      */
     @GetMapping("/createTask")
     public String createTask() {
-        LOGGER.info("Вызов сервиса поиска всех задач");
+        LOGGER.info("Сооздание новой задачи");
 
         return "createTask";
     }
