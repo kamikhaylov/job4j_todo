@@ -32,4 +32,9 @@ public interface TaskRepository {
      * Обновить задачу.
      */
     void update(Task task);
+
+    /**
+     * Удалить задачу.
+     */
+    void delete(int id);
 }

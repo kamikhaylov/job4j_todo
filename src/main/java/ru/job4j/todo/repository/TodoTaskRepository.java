@@ -104,4 +104,25 @@ public class TodoTaskRepository implements TaskRepository {
             session.getTransaction().rollback();
         }
     }
+
+    /**
+     * Удалить задачу.
+     */
+    @Override
+    public void delete(int id) {
+        LOGGER.info("Удаление задачи в БД: " + id);
+
+        Session session = sf.openSession();
+        try {
+            session.beginTransaction();
+            session.createQuery("DELETE Task WHERE id = :fId")
+                    .setParameter("fId", id)
+                    .executeUpdate();
+            session.getTransaction().commit();
+            session.close();
+        } catch (Exception e) {
+            LOGGER.error(Arrays.toString(e.getStackTrace()));
+            session.getTransaction().rollback();
+        }
+    }
 }

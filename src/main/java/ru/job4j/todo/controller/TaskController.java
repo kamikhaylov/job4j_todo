@@ -119,7 +119,7 @@ public class TaskController {
     }
 
     /**
-     * Устанавливает признак выполнения зачачи
+     * Устанавливает признак выполнения задачи
      * @param task - задача
      * @return возвращает страницу со списком всех задач
      */
@@ -130,6 +130,21 @@ public class TaskController {
         service.update(task);
 
         LOGGER.info("Сервис обновления информации по задаче выполнен");
+        return "redirect:/tasks";
+    }
+
+    /**
+     * Удалениие задачи
+     * @param id - идентификатор задачи
+     * @return возвращает страницу со списком всех задач
+     */
+    @GetMapping("/delete/{taskId}")
+    public String deleteTask(@PathVariable("taskId") int id) {
+        LOGGER.info("Запущен сервис удаления задачи с id: " + id);
+
+        service.delete(id);
+
+        LOGGER.info("Сервис удаления задачи выполнен");
         return "redirect:/tasks";
     }
 }

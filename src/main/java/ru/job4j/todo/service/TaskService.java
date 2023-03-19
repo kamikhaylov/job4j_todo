@@ -50,4 +50,11 @@ public class TaskService {
     public void update(Task task) {
         repository.update(task);
     }
+
+    /**
+     * Удалить задачу.
+     */
+    public void delete(int id) {
+        repository.delete(id);
+    }
 }
