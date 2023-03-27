@@ -9,26 +9,25 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
 
 /**
- * Модель задания
+ * Модель пользователя
  */
 @Entity
-@Table(name = "tasks")
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Task {
+public class User {
 
-    /** Идентификатор задания */
+    /** Идентификатор пользователя */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    /** Описание */
-    private String description;
-    /** Дата создания */
-    private LocalDateTime created;
-    /** Выполнено */
-    private Boolean done;
+    /** Имя */
+    private String name;
+    /** Логин */
+    private String login;
+    /** Пароль */
+    private String password;
 }

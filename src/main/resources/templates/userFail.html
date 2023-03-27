@@ -27,47 +27,17 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div class="navbar-nav">
-                        <a class="nav-item nav-link active" href="#" th:href="@{/tasks}">Задачи<span class="sr-only">(current)</span></a>
-                        <a class="nav-item nav-link" href="#" th:href="@{/formAddUser}">Регистрация<span class="sr-only">(current)</span></a>
-                        <a class="nav-item nav-link" th:if="${user.name == 'guest'}" th:href="@{/loginPage}">
-                            <span th:text="${user.name}"></span>
-                            <span> | Войти</span>
-                        </a>
-                        <a class="nav-item nav-link" th:if="${user.name != 'guest'}" th:href="@{/logout}">
-                            <span th:text="${user.name}"></span>
-                            <span> | Выйти</span>
-                        </a>
+                        <a class="nav-item nav-link" href="#" th:href="@{/tasks}">Задачи<span class="sr-only">(current)</span></a>
+                        <a class="nav-item nav-link" th:href="@{/formAddUser}">Регистрация</a>
+                        <a class="nav-item nav-link active" href="#" th:href="@{/loginPage}">Войти<span class="sr-only">(current)</span></a>
                     </div>
                 </div>
             </nav>
-            <br>
-            <a th:href="@{|/done/${task.id}|}">
-                <button type="button" class="btn btn-outline-secondary">Выполнено</button>
-            </a>
-            <a th:href="@{|/task/${task.id}/update|}">
-                <button type="button" class="btn btn-outline-secondary">Отредактировать</button>
-            </a>
-            <a th:href="@{|/delete/${task.id}|}">
-                <button type="button" class="btn btn-outline-secondary">Удалить</button>
-            </a>
             <br><br>
             <div class="row">
                 <div class="card" style="width: 100%">
                     <div class="card-header">
-                        Подробная информация
-                    </div>
-                    <div class="card-body">
-                        <div>Идентификатор: <span th:text="${task.id}"></span></div>
-                        <div>Описание: <span th:text="${task.description}"></span></div>
-                        <div>Дата: <span th:text="${#temporals.format(task.created, 'dd.MM.yyyy HH:mm:ss')}"></span></div>
-                        <div>Выполнено:
-                            <td th:if="${task.done == true}">
-                                <i class="fa fa-check-square-o"></i>
-                            </td>
-                            <td th:if="${task.done == false}">
-                                <i class="fa fa-square-o"></i>
-                            </td>
-                        </div>
+                        Пользователь существует
                     </div>
                 </div>
             </div>
