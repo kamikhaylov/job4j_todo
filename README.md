@@ -31,8 +31,41 @@
 ### Подготовка к запуску приложения
 - Создать БД todo хост `jdbc:postgresql://localhost:5432/todo`
 - Собрать jar с приложением, выполнив команду `mvn install`
-- Запустить приложение из папки target, выполнив команду: `java -jar job4j_cinema-1.0-SNAPSHOT.jar`
+- Запустить приложение из папки target, выполнив команду: `java -jar job4j_todo-1.0-SNAPSHOT.jar`
 - Перейти в браузере по ссылке `http://localhost:8080/todo`
+
+### Главная страница, форма со всеми задачами
+![tasks.png](readme/images/tasks.png)
+
+### Страница с новыми задачами
+![newTasks.png](readme/images/newTasks.png)
+
+### Страница с выполненными задачами
+![doneTasks.png](readme/images/doneTasks.png)
+
+### Добавление новой задачи
+![createTasks.png](readme/images/createTasks.png)
+
+### Детальная информация по задаче
+![task.png](readme/images/task.png)
+
+### Редактирование задачи
+![update.png](readme/images/update.png)
+
+### Регистрация нового пользователя
+![registration.png](readme/images/registration.png)
+
+### Пользователь существует
+![userFail.png](readme/images/userFail.png)
+
+### Пользователь успешно зарегистрирован
+![userSuccess.png](readme/images/userSuccess.png)
+
+### Сраница авторизации
+![loginPage.png](readme/images/loginPage.png)
+
+### Неверный логин или пароль
+![loginFail.png](readme/images/loginFail.png)
 
 ### Контакты
 kanmikhaylov@gmail.com
