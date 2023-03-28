@@ -49,21 +49,26 @@ public class TodoUserRepository implements UserRepository {
 
     /**
      * Поиск пользователя по логину
-     * @param login - логин
+     * @param user - пользователь
      * @return возвращает пользователя
      */
-    public Optional<User> findUserByLogin(String login) {
-        LOGGER.info("Поиск пользователя по логину: " + login);
+    public Optional<User> findUser(User user) {
+        LOGGER.info("Поиск пользователя: " + user);
 
         Session session = sf.openSession();
-        Optional<User> user = session
-                .createQuery("FROM User u WHERE u.login = :fLogin", User.class)
-                .setParameter("fLogin", login)
+        Optional<User> result = session
+                .createQuery(
+                        "FROM User u " +
+                        "WHERE u.login = :fLogin " +
+                                "AND u.password = :fPassword",
+                        User.class)
+                .setParameter("fLogin", user.getLogin())
+                .setParameter("fPassword", user.getPassword())
                 .uniqueResultOptional();
         session.close();
 
-        LOGGER.info("Поиск пользователя по логину завершен: " + user);
-        return user;
+        LOGGER.info("Поиск пользователя завершен: " + result);
+        return result;
     }
 
     /**

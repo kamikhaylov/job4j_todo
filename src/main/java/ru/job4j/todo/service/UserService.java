@@ -30,10 +30,10 @@ public class UserService {
 
     /**
      * Поиск пользователя по логину
-     * @param login - логин
+     * @param user - пользователь
      * @return возвращает пользователя
      */
-    public Optional<User> findUserByLogin(String login) {
-        return store.findUserByLogin(login);
+    public Optional<User> findUser(User user) {
+        return store.findUser(user);
     }
 }

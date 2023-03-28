@@ -19,10 +19,10 @@ public interface UserRepository {
 
     /**
      * Поиск пользователя по логину
-     * @param login - логин
+     * @param user - пользователь
      * @return возвращает пользователя
      */
-    Optional<User> findUserByLogin(String login);
+    Optional<User> findUser(User user);
 
     /**
      * Поиск всех пользователей
