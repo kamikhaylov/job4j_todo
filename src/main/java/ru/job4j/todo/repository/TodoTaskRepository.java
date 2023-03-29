@@ -112,8 +112,12 @@ public class TodoTaskRepository implements TaskRepository {
         Session session = sf.openSession();
         try {
             session.beginTransaction();
-            session.createQuery("UPDATE Task SET description = :fDescription, created = :fCreated, done = :fDone "
-                    + "WHERE id = :fId")
+            session.createQuery(
+                    "UPDATE Task "
+                            + "SET description = :fDescription, "
+                            + "created = :fCreated, "
+                            + "done = :fDone "
+                            + "WHERE id = :fId")
                     .setParameter("fDescription", task.getDescription())
                     .setParameter("fCreated", task.getCreated())
                     .setParameter("fDone", task.getDone())

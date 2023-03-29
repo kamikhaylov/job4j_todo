@@ -58,9 +58,9 @@ public class TodoUserRepository implements UserRepository {
         Session session = sf.openSession();
         Optional<User> result = session
                 .createQuery(
-                        "FROM User u " +
-                        "WHERE u.login = :fLogin " +
-                                "AND u.password = :fPassword",
+                        "FROM User u "
+                                + "WHERE u.login = :fLogin "
+                                + "AND u.password = :fPassword",
                         User.class)
                 .setParameter("fLogin", user.getLogin())
                 .setParameter("fPassword", user.getPassword())

@@ -162,7 +162,8 @@ public class TaskController {
      * @return возвращает страницу редактирования задачи
      */
     @GetMapping("/task/{taskId}/update")
-    public String formUpdateTask(Model model, @PathVariable("taskId") int id, HttpSession httpSession) {
+    public String formUpdateTask(Model model, @PathVariable("taskId") int id,
+                                 HttpSession httpSession) {
         LOGGER.info("Вызов сервиса обновления информации по задаче");
 
         User user = UserSession.getUser(model, httpSession);
