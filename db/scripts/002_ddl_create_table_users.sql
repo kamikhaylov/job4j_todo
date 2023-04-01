@@ -1,8 +1,8 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL,
-    login TEXT NOT NULL UNIQUE,
-    password TEXT NOT NULL
+    name varchar NOT NULL,
+    login varchar NOT NULL UNIQUE,
+    password varchar NOT NULL
 );
 
 ALTER TABLE users ADD CONSTRAINT login_unique UNIQUE (login);

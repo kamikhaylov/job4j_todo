@@ -39,7 +39,7 @@ public class TodoUserRepository implements UserRepository {
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
             return Optional.empty();
         }
 
