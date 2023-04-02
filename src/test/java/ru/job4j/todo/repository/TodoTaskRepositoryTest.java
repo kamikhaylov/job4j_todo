@@ -7,7 +7,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import ru.job4j.todo.Main;
+import ru.job4j.todo.config.HibernateConfiguration;
 import ru.job4j.todo.model.Task;
 
 import java.time.LocalDateTime;
@@ -19,7 +19,7 @@ class TodoTaskRepositoryTest {
 
     @BeforeAll
     public static void before() {
-        sf = new Main().sf();
+        sf = new HibernateConfiguration().sf();
     }
 
     @AfterAll
@@ -52,11 +52,11 @@ class TodoTaskRepositoryTest {
         Assertions.assertEquals(addResult1.getId(), task1.getId());
         Assertions.assertEquals(addResult1.getDescription(), task1.getDescription());
         Assertions.assertEquals(addResult1.getCreated(), task1.getCreated());
-        Assertions.assertEquals(addResult1.getDone(), task1.getDone());
+        Assertions.assertEquals(addResult1.isDone(), task1.isDone());
         Assertions.assertEquals(addResult2.getId(), task2.getId());
         Assertions.assertEquals(addResult2.getDescription(), task2.getDescription());
         Assertions.assertEquals(addResult2.getCreated(), task2.getCreated());
-        Assertions.assertEquals(addResult2.getDone(), task2.getDone());
+        Assertions.assertEquals(addResult2.isDone(), task2.isDone());
     }
 
     @Test
@@ -68,17 +68,33 @@ class TodoTaskRepositoryTest {
         Task addResult1 =  store.add(task1);
         task2.setId(addResult1.getId());
         store.update(task2);
-        List<Task> users = store.findAll();
+        List<Task> tasks = store.findAll();
         Optional<Task> result = store.findById(addResult1.getId());
 
-        Assertions.assertNotNull(users);
-        Assertions.assertEquals(users.size(), 1);
+        Assertions.assertNotNull(tasks);
+        Assertions.assertEquals(tasks.size(), 1);
         Assertions.assertNotNull(result);
         Assertions.assertNotNull(result.get());
         Assertions.assertEquals(result.get().getId(), task2.getId());
         Assertions.assertEquals(result.get().getDescription(), task2.getDescription());
         Assertions.assertEquals(result.get().getCreated(), task2.getCreated());
-        Assertions.assertEquals(result.get().getDone(), task2.getDone());
+        Assertions.assertEquals(result.get().isDone(), task2.isDone());
+    }
+
+    @Test
+    public void whenUpdateDone() {
+        TodoTaskRepository store = new TodoTaskRepository(sf);
+        Task task = new Task(1, "description8", LocalDateTime.now(), false);
+
+        Task addResult = store.add(task);
+        store.updateDone(addResult.getId());
+        Optional<Task> result = store.findById(addResult.getId());
+
+        Assertions.assertNotNull(result);
+        Assertions.assertNotNull(result.get());
+        Assertions.assertEquals(result.get().getDescription(), task.getDescription());
+        Assertions.assertEquals(result.get().getCreated(), task.getCreated());
+        Assertions.assertTrue(result.get().isDone());
     }
 
     @Test
@@ -97,7 +113,7 @@ class TodoTaskRepositoryTest {
         Assertions.assertEquals(users.get(0).getId(), task2.getId());
         Assertions.assertEquals(users.get(0).getDescription(), task2.getDescription());
         Assertions.assertEquals(users.get(0).getCreated(), task2.getCreated());
-        Assertions.assertEquals(users.get(0).getDone(), task2.getDone());
+        Assertions.assertEquals(users.get(0).isDone(), task2.isDone());
     }
 
     @Test
@@ -108,14 +124,14 @@ class TodoTaskRepositoryTest {
 
         store.add(task1);
         store.add(task2);
-        List<Task> users = store.findNew();
+        List<Task> users = store.findByDone(false);
 
         Assertions.assertNotNull(users);
         Assertions.assertEquals(users.size(), 1);
         Assertions.assertEquals(users.get(0).getId(), task2.getId());
         Assertions.assertEquals(users.get(0).getDescription(), task2.getDescription());
         Assertions.assertEquals(users.get(0).getCreated(), task2.getCreated());
-        Assertions.assertEquals(users.get(0).getDone(), task2.getDone());
+        Assertions.assertEquals(users.get(0).isDone(), task2.isDone());
     }
 
     @Test
@@ -126,13 +142,13 @@ class TodoTaskRepositoryTest {
 
         store.add(task1);
         store.add(task2);
-        List<Task> users = store.findCompleted();
+        List<Task> users = store.findByDone(true);
 
         Assertions.assertNotNull(users);
         Assertions.assertEquals(users.size(), 1);
         Assertions.assertEquals(users.get(0).getId(), task2.getId());
         Assertions.assertEquals(users.get(0).getDescription(), task2.getDescription());
         Assertions.assertEquals(users.get(0).getCreated(), task2.getCreated());
-        Assertions.assertEquals(users.get(0).getDone(), task2.getDone());
+        Assertions.assertEquals(users.get(0).isDone(), task2.isDone());
     }
 }

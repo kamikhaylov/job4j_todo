@@ -29,19 +29,11 @@ public class TaskService {
     }
 
     /**
-     * Получение списка новых задач.
+     * Получение списка задач по признаку  выполнения.
      * @return список задач.
      */
-    public List<Task> findNews() {
-        return repository.findNew();
-    }
-
-    /**
-     * Получение списка выполненных задач.
-     * @return список задач.
-     */
-    public List<Task> findCompleted() {
-        return repository.findCompleted();
+    public List<Task> findByDone(boolean done) {
+        return repository.findByDone(done);
     }
 
     /**
@@ -62,15 +54,25 @@ public class TaskService {
 
     /**
      * Обновить задачу.
+     * @return задача.
      */
-    public void update(Task task) {
-        repository.update(task);
+    public Optional<Task> update(Task task) {
+        return repository.update(task);
+    }
+
+    /**
+     * Обновить признак выполнения задачи.
+     * @return задача.
+     */
+    public Optional<Task> updateDone(int id) {
+        return repository.updateDone(id);
     }
 
     /**
      * Удалить задачу.
+     * @return результат удаления.
      */
-    public void delete(int id) {
-        repository.delete(id);
+    public boolean delete(int id) {
+        return repository.delete(id);
     }
 }

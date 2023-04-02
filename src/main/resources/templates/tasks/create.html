@@ -27,8 +27,8 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div class="navbar-nav">
-                        <a class="nav-item nav-link active" href="#" th:href="@{/tasks}">Задачи<span class="sr-only">(current)</span></a>
-                        <a class="nav-item nav-link" href="#" th:href="@{/formAddUser}">Регистрация<span class="sr-only">(current)</span></a>
+                        <a class="nav-item nav-link active" href="#" th:href="@{/tasks/all}">Задачи<span class="sr-only">(current)</span></a>
+                        <a class="nav-item nav-link" href="#" th:href="@{/tasks/formAddUser}">Регистрация<span class="sr-only">(current)</span></a>
                         <a class="nav-item nav-link" th:if="${user.name == 'guest'}" th:href="@{/loginPage}">
                             <span th:text="${user.name}"></span>
                             <span> | Войти</span>
@@ -41,47 +41,35 @@
                 </div>
             </nav>
             <br>
-            <a th:href="@{/tasks}">
+            <a th:href="@{/tasks/all}">
                 <button type="button" class="btn btn-outline-secondary">Все</button>
             </a>
-            <a th:href="@{/newTasks}">
-                <button type="button" class="btn btn-secondary">Новые</button>
+            <a th:href="@{/tasks/new}">
+                <button type="button" class="btn btn-outline-secondary">Новые</button>
             </a>
-            <a th:href="@{/doneTasks}">
+            <a th:href="@{/tasks/done}">
                 <button type="button" class="btn btn-outline-secondary">Выполненные</button>
             </a>
-            <a th:href="@{/createTask}">
+            <a th:href="@{/tasks/create}">
                 <button type="button" class="btn btn-primary">Добавить задание</button>
             </a>
             <br><br>
             <div class="row">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Описание</th>
-                        <th scope="col">Дата</th>
-                        <th scope="col">Отметка о выполнении</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="task: ${tasks}">
-                            <td th:text="${task.id}"/>
-                            <td width="55%">
-                                <a th:href="@{|/task/${task.id}|}">
-                                    <span th:text="${task.description}"></span>
-                                </a>
-                            </td>
-                            <td width="20%" th:text="${#temporals.format(task.created, 'dd.MM.yyyy HH:mm:ss')}"/>
-                            <td width="20%" th:if="${task.done == true}">
-                                <i class="fa fa-check-square-o"></i>
-                            </td>
-                            <td width="20%" th:if="${task.done == false}">
-                                <i class="fa fa-square-o"></i>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="card" style="width: 100%">
+                    <div class="card-header">
+                        Добавление задания
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/tasks/add}" method="POST" enctype="multipart/form-data">
+                            <input type="hidden" required name="id" value="0"/>
+                            <div class="form-group">
+                                <label for="description">Добавьте описание</label>
+                                <input type="text" class="form-control" required name="description" id="description">
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-3">Сохранить</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </body>

@@ -51,7 +51,7 @@ class TaskControllerTest {
         String page = controller.tasks(model, httpSession);
 
         verify(model).addAttribute("tasks", tasks);
-        Assertions.assertEquals(page, "tasks");
+        Assertions.assertEquals(page, "tasks/tasks");
     }
 
     @Test
@@ -60,12 +60,12 @@ class TaskControllerTest {
                 new Task(1, "Task_01", LocalDateTime.now(), false),
                 new Task(2, "Task_02", LocalDateTime.now(), false)
         );
-        when(service.findNews()).thenReturn(tasks);
+        when(service.findByDone(false)).thenReturn(tasks);
         TaskController controller = new TaskController(service);
         String page = controller.newTasks(model, httpSession);
 
         verify(model).addAttribute("tasks", tasks);
-        Assertions.assertEquals(page, "newTasks");
+        Assertions.assertEquals(page, "tasks/new");
     }
 
     @Test
@@ -74,12 +74,12 @@ class TaskControllerTest {
                 new Task(1, "Task_01", LocalDateTime.now(), true),
                 new Task(2, "Task_02", LocalDateTime.now(), true)
         );
-        when(service.findCompleted()).thenReturn(tasks);
+        when(service.findByDone(true)).thenReturn(tasks);
         TaskController controller = new TaskController(service);
         String page = controller.doneTasks(model, httpSession);
 
         verify(model).addAttribute("tasks", tasks);
-        Assertions.assertEquals(page, "doneTasks");
+        Assertions.assertEquals(page, "tasks/done");
     }
 
     @Test
@@ -87,7 +87,7 @@ class TaskControllerTest {
         TaskController controller = new TaskController(service);
         String page = controller.createTask(model, httpSession);
 
-        Assertions.assertEquals(page, "createTask");
+        Assertions.assertEquals(page, "tasks/create");
     }
 
     @Test
@@ -98,7 +98,7 @@ class TaskControllerTest {
         String page = controller.addTask(task);
 
         verify(service).add(task);
-        Assertions.assertEquals(page, "redirect:/tasks");
+        Assertions.assertEquals(page, "redirect:/tasks/all");
     }
 
     @Test
@@ -110,18 +110,31 @@ class TaskControllerTest {
 
         verify(model).addAttribute("task", task);
         verify(service).findById(ID_TEST);
-        Assertions.assertEquals(page, "task");
+        Assertions.assertEquals(page, "tasks/task");
     }
 
     @Test
     public void whenDone() {
-        Task task = new Task(ID_TEST, "Task_01", LocalDateTime.now(), true);
-        when(service.findById(ID_TEST)).thenReturn(Optional.of(task));
         TaskController controller = new TaskController(service);
+        Task task = new Task(1, "Task_01", LocalDateTime.now(), true);
+        when(service.updateDone(task.getId())).thenReturn(Optional.of(task));
+
         String page = controller.done(ID_TEST);
 
-        verify(service).update(task);
-        Assertions.assertEquals(page, "redirect:/tasks");
+        verify(service).updateDone(ID_TEST);
+        Assertions.assertEquals(page, "redirect:/tasks/all");
+    }
+
+    @Test
+    public void whenDoneFail() {
+        TaskController controller = new TaskController(service);
+        Task task = new Task(1, "Task_01", LocalDateTime.now(), true);
+        when(service.updateDone(task.getId())).thenReturn(Optional.empty());
+
+        String page = controller.done(ID_TEST);
+
+        verify(service).updateDone(ID_TEST);
+        Assertions.assertEquals(page, "redirect:/tasks/error?fail=update");
     }
 
     @Test
@@ -132,25 +145,50 @@ class TaskControllerTest {
         String page = controller.formUpdateTask(model, ID_TEST, httpSession);
 
         verify(model).addAttribute("task", task);
-        Assertions.assertEquals(page, "updateTask");
+        Assertions.assertEquals(page, "tasks/update");
     }
 
     @Test
     public void whenUpdate() {
         Task task = new Task(1, "Task_01", LocalDateTime.now(), true);
         TaskController controller = new TaskController(service);
-        String page = controller.update(task);
+        when(service.update(task)).thenReturn(Optional.of(task));
+
+        String page = controller.update(model, task, httpSession);
 
         verify(service).update(task);
-        Assertions.assertEquals(page, "redirect:/tasks");
+        Assertions.assertEquals(page, "redirect:/tasks/all");
+    }
+
+    @Test
+    public void whenUpdateFail() {
+        Task task = new Task(1, "Task_01", LocalDateTime.now(), true);
+        TaskController controller = new TaskController(service);
+        when(service.update(task)).thenReturn(Optional.empty());
+
+        String page = controller.update(model, task, httpSession);
+
+        verify(service).update(task);
+        Assertions.assertEquals(page, "redirect:/tasks/error?fail=update");
     }
 
     @Test
     public void whenDelete() {
         TaskController controller = new TaskController(service);
+        when(service.delete(ID_TEST)).thenReturn(true);
         String page = controller.deleteTask(ID_TEST);
 
         verify(service).delete(ID_TEST);
-        Assertions.assertEquals(page, "redirect:/tasks");
+        Assertions.assertEquals(page, "redirect:/tasks/all");
+    }
+
+    @Test
+    public void whenDeleteFail() {
+        TaskController controller = new TaskController(service);
+        when(service.delete(ID_TEST)).thenReturn(false);
+        String page = controller.deleteTask(ID_TEST);
+
+        verify(service).delete(ID_TEST);
+        Assertions.assertEquals(page, "redirect:/tasks/error?fail=delete");
     }
 }

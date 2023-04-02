@@ -52,6 +52,12 @@
 ### Редактирование задачи
 ![update.png](readme/images/update.png)
 
+### Ошибка обновления задачи
+![taskUpdateError.png](readme/images/taskUpdateError.png)
+
+### Ошибка удаления задачи
+![taskDeleteError.png](readme/images/taskDeleteError.png)
+
 ### Регистрация нового пользователя
 ![registration.png](readme/images/registration.png)
 

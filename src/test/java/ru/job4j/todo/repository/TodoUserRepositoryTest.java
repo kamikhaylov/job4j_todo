@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import ru.job4j.todo.Main;
+import ru.job4j.todo.config.HibernateConfiguration;
 import ru.job4j.todo.model.User;
 
 import java.util.List;
@@ -22,7 +22,7 @@ class TodoUserRepositoryTest {
 
     @BeforeAll
     public static void before() {
-        sf = new Main().sf();
+        sf = new HibernateConfiguration().sf();
     }
 
     @AfterAll

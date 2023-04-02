@@ -130,7 +130,7 @@ class UserControllerTest {
         String page = userController.login(user, req);
 
         verify(service).findUser(user);
-        Assertions.assertEquals(page, "redirect:/tasks");
+        Assertions.assertEquals(page, "redirect:/tasks/all");
     }
 
     @Test

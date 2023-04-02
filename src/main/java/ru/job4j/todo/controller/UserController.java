@@ -78,7 +78,7 @@ public class UserController {
             return "redirect:/loginPage?fail=true";
         }
         UserSession.create(userDb.get(), req);
-        return "redirect:/tasks";
+        return "redirect:/tasks/all";
     }
 
     @GetMapping("/logout")

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.job4j.todo.common.UserSession;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
@@ -17,12 +19,14 @@ import ru.job4j.todo.service.TaskService;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Контроллер задач
  */
 @ThreadSafe
 @Controller
+@RequestMapping("/tasks")
 public class TaskController {
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskController.class.getName());
 
@@ -38,7 +42,7 @@ public class TaskController {
      * @param httpSession - пользовательская сессия
      * @return возвращает страницу со списком всех заданий
      */
-    @GetMapping("/tasks")
+    @GetMapping("/all")
     public String tasks(Model model, HttpSession httpSession) {
         LOGGER.info("Вызов сервиса поиска всех задач");
 
@@ -48,7 +52,7 @@ public class TaskController {
         model.addAttribute("user", user);
 
         LOGGER.info("Результат вызова сервиса поиска всех задач: " + tasks);
-        return "tasks";
+        return "tasks/tasks";
     }
 
     /**
@@ -57,17 +61,17 @@ public class TaskController {
      * @param httpSession - пользовательская сессия
      * @return возвращает страницу со списком новых заданий
      */
-    @GetMapping("/newTasks")
+    @GetMapping("/new")
     public String newTasks(Model model, HttpSession httpSession) {
         LOGGER.info("Вызов сервиса поиска новых задач");
 
         User user = UserSession.getUser(model, httpSession);
-        List<Task> tasks = service.findNews();
+        List<Task> tasks = service.findByDone(false);
         model.addAttribute("tasks", tasks);
         model.addAttribute("user", user);
 
         LOGGER.info("Результат вызова сервиса поиска новых задач: " + tasks);
-        return "newTasks";
+        return "tasks/new";
     }
 
     /**
@@ -76,17 +80,17 @@ public class TaskController {
      * @param httpSession - пользовательская сессия
      * @return возвращает страницу со списком всех заданий
      */
-    @GetMapping("/doneTasks")
+    @GetMapping("/done")
     public String doneTasks(Model model, HttpSession httpSession) {
         LOGGER.info("Вызов сервиса поиска выполненных задач");
 
         User user = UserSession.getUser(model, httpSession);
-        List<Task> tasks = service.findCompleted();
+        List<Task> tasks = service.findByDone(true);
         model.addAttribute("tasks", tasks);
         model.addAttribute("user", user);
 
         LOGGER.info("Результат вызова сервиса поиска выполненных задач: " + tasks);
-        return "doneTasks";
+        return "tasks/done";
     }
 
     /**
@@ -95,12 +99,12 @@ public class TaskController {
      * @param httpSession - пользовательская сессия
      * @return возвращает страницу добавления новой задачи
      */
-    @GetMapping("/createTask")
+    @GetMapping("/create")
     public String createTask(Model model, HttpSession httpSession) {
-        LOGGER.info("Сооздание новой задачи");
+        LOGGER.info("Создание новой задачи");
 
         model.addAttribute("user", UserSession.getUser(model, httpSession));
-        return "createTask";
+        return "tasks/create";
     }
 
     /**
@@ -108,7 +112,7 @@ public class TaskController {
      * @param task - задача
      * @return возвращает страницу со списком всех заданий
      */
-    @PostMapping("/addTask")
+    @PostMapping("/add")
     public String addTask(@ModelAttribute Task task) {
         LOGGER.info("Вызов сервиса добавления новой задачи");
 
@@ -117,7 +121,7 @@ public class TaskController {
         Task result = service.add(task);
 
         LOGGER.info("Добавленная задача: " + result);
-        return "redirect:/tasks";
+        return "redirect:/tasks/all";
     }
 
     /**
@@ -132,12 +136,15 @@ public class TaskController {
         LOGGER.info("Вызов сервиса получения подробной информации по задаче");
 
         User user = UserSession.getUser(model, httpSession);
-        Task task = service.findById(id).get();
-        model.addAttribute("task", task);
+        Optional<Task> task = service.findById(id);
+        if (task.isEmpty()) {
+            return "redirect:/tasks/error?fail=find";
+        }
+        model.addAttribute("task", task.get());
         model.addAttribute("user", user);
 
         LOGGER.info("Сервис получения подробной информации по задаче выполнен: " + task);
-        return "task";
+        return "tasks/task";
     }
 
     /**
@@ -145,13 +152,13 @@ public class TaskController {
      * @param id - идентификатор задачи
      * @return возвращает страницу со списком всех задач
      */
-    @GetMapping("/done/{taskId}")
-    public String done(@PathVariable("taskId") int id) {
+    @GetMapping("/done/{taskId}") public String done(@PathVariable("taskId") int id) {
         LOGGER.info("Вызов сервиса выполнения задачи");
-        Task task = service.findById(id).get();
-        task.setDone(true);
-        service.update(task);
-        return "redirect:/tasks";
+        Optional<Task> result = service.updateDone(id);
+        if (result.isEmpty()) {
+            return "redirect:/tasks/error?fail=update";
+        }
+        return "redirect:/tasks/all";
     }
 
     /**
@@ -167,9 +174,13 @@ public class TaskController {
         LOGGER.info("Вызов сервиса обновления информации по задаче");
 
         User user = UserSession.getUser(model, httpSession);
-        model.addAttribute("task", service.findById(id).get());
+        Optional<Task> task = service.findById(id);
+        if (task.isEmpty()) {
+            return "redirect:/tasks/error?fail=find";
+        }
+        model.addAttribute("task", task.get());
         model.addAttribute("user", user);
-        return "updateTask";
+        return "tasks/update";
     }
 
     /**
@@ -178,13 +189,28 @@ public class TaskController {
      * @return возвращает страницу со списком всех задач
      */
     @PostMapping("/update")
-    public String update(@ModelAttribute Task task) {
+    public String update(Model model, @ModelAttribute Task task, HttpSession httpSession) {
         LOGGER.info("Сохранение отредактированной задачи: " + task);
-
-        service.update(task);
-
+        User user = UserSession.getUser(model, httpSession);
+        Optional<Task> result = service.update(task);
+        model.addAttribute("user", user);
+        if (result.isEmpty()) {
+            return "redirect:/tasks/error?fail=update";
+        }
         LOGGER.info("Сервис обновления информации по задаче выполнен");
-        return "redirect:/tasks";
+        return "redirect:/tasks/all";
+    }
+
+    @GetMapping("/error")
+    public String error(Model model,
+                        @RequestParam(name = "fail", required = false) String fail,
+                        HttpSession httpSession) {
+        LOGGER.info("Страница с ошибкой");
+
+        User user = UserSession.getUser(model, httpSession);
+        model.addAttribute("fail", fail);
+        model.addAttribute("user", user);
+        return "tasks/error";
     }
 
     /**
@@ -196,9 +222,11 @@ public class TaskController {
     public String deleteTask(@PathVariable("taskId") int id) {
         LOGGER.info("Запущен сервис удаления задачи с id: " + id);
 
-        service.delete(id);
-
+        boolean result = service.delete(id);
+        if (!result) {
+            return "redirect:/tasks/error?fail=delete";
+        }
         LOGGER.info("Сервис удаления задачи выполнен");
-        return "redirect:/tasks";
+        return "redirect:/tasks/all";
     }
 }

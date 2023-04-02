@@ -17,18 +17,6 @@ public interface TaskRepository {
     List<Task> findAll();
 
     /**
-     * Получение списка новых задач.
-     * @return список задач.
-     */
-    List<Task> findNew();
-
-    /**
-     * Получение списка выполненных задач.
-     * @return список задач.
-     */
-    List<Task> findCompleted();
-
-    /**
      * Получение задачи по ID.
      * @return задача.
      */
@@ -36,17 +24,36 @@ public interface TaskRepository {
 
     /**
      * Создать задачу.
+     * @param task задача.
      * @return задача.
      */
     Task add(Task task);
 
     /**
      * Обновить задачу.
+     * @param task задача.
+     * @return задача.
      */
-    void update(Task task);
+    Optional<Task> update(Task task);
+
+    /**
+     * Обновляет признак у задачи.
+     * @param id идентификатор задачи.
+     * @return задача.
+     */
+    Optional<Task> updateDone(int id);
 
     /**
      * Удалить задачу.
+     * @param id идентификатор задания.
+     * @return результат удаления.
      */
-    void delete(int id);
+    boolean delete(int id);
+
+    /**
+     * Получение списка выполненных задач из БД.
+     * @param done признак выполнения задачи.
+     * @return список задач по фильтру done.
+     */
+    List<Task> findByDone(boolean done);
 }
