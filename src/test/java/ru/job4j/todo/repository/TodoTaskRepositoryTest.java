@@ -11,11 +11,13 @@ import ru.job4j.todo.config.HibernateConfiguration;
 import ru.job4j.todo.model.Task;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
 class TodoTaskRepositoryTest {
     private static SessionFactory sf;
+    private DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
     @BeforeAll
     public static void before() {
@@ -51,11 +53,13 @@ class TodoTaskRepositoryTest {
         Assertions.assertEquals(users.size(), 2);
         Assertions.assertEquals(addResult1.getId(), task1.getId());
         Assertions.assertEquals(addResult1.getDescription(), task1.getDescription());
-        Assertions.assertEquals(addResult1.getCreated(), task1.getCreated());
+        Assertions.assertEquals(
+                addResult1.getCreated().format(format), task1.getCreated().format(format));
         Assertions.assertEquals(addResult1.isDone(), task1.isDone());
         Assertions.assertEquals(addResult2.getId(), task2.getId());
         Assertions.assertEquals(addResult2.getDescription(), task2.getDescription());
-        Assertions.assertEquals(addResult2.getCreated(), task2.getCreated());
+        Assertions.assertEquals(
+                addResult2.getCreated().format(format), task2.getCreated().format(format));
         Assertions.assertEquals(addResult2.isDone(), task2.isDone());
     }
 
@@ -77,7 +81,8 @@ class TodoTaskRepositoryTest {
         Assertions.assertNotNull(result.get());
         Assertions.assertEquals(result.get().getId(), task2.getId());
         Assertions.assertEquals(result.get().getDescription(), task2.getDescription());
-        Assertions.assertEquals(result.get().getCreated(), task2.getCreated());
+        Assertions.assertEquals(
+                result.get().getCreated().format(format), task2.getCreated().format(format));
         Assertions.assertEquals(result.get().isDone(), task2.isDone());
     }
 
@@ -93,7 +98,8 @@ class TodoTaskRepositoryTest {
         Assertions.assertNotNull(result);
         Assertions.assertNotNull(result.get());
         Assertions.assertEquals(result.get().getDescription(), task.getDescription());
-        Assertions.assertEquals(result.get().getCreated(), task.getCreated());
+        Assertions.assertEquals(
+                result.get().getCreated().format(format), task.getCreated().format(format));
         Assertions.assertTrue(result.get().isDone());
     }
 
@@ -112,7 +118,8 @@ class TodoTaskRepositoryTest {
         Assertions.assertEquals(users.size(), 1);
         Assertions.assertEquals(users.get(0).getId(), task2.getId());
         Assertions.assertEquals(users.get(0).getDescription(), task2.getDescription());
-        Assertions.assertEquals(users.get(0).getCreated(), task2.getCreated());
+        Assertions.assertEquals(
+                users.get(0).getCreated().format(format), task2.getCreated().format(format));
         Assertions.assertEquals(users.get(0).isDone(), task2.isDone());
     }
 
@@ -130,7 +137,8 @@ class TodoTaskRepositoryTest {
         Assertions.assertEquals(users.size(), 1);
         Assertions.assertEquals(users.get(0).getId(), task2.getId());
         Assertions.assertEquals(users.get(0).getDescription(), task2.getDescription());
-        Assertions.assertEquals(users.get(0).getCreated(), task2.getCreated());
+        Assertions.assertEquals(
+                users.get(0).getCreated().format(format), task2.getCreated().format(format));
         Assertions.assertEquals(users.get(0).isDone(), task2.isDone());
     }
 
@@ -148,7 +156,8 @@ class TodoTaskRepositoryTest {
         Assertions.assertEquals(users.size(), 1);
         Assertions.assertEquals(users.get(0).getId(), task2.getId());
         Assertions.assertEquals(users.get(0).getDescription(), task2.getDescription());
-        Assertions.assertEquals(users.get(0).getCreated(), task2.getCreated());
+        Assertions.assertEquals(
+                users.get(0).getCreated().format(format), task2.getCreated().format(format));
         Assertions.assertEquals(users.get(0).isDone(), task2.isDone());
     }
 }
