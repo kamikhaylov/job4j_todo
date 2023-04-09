@@ -27,9 +27,9 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div class="navbar-nav">
-                        <a class="nav-item nav-link" href="#" th:href="@{/tasks/all}">Задачи<span class="sr-only">(current)</span></a>
-                        <a class="nav-item nav-link" th:href="@{/formAddUser}">Регистрация</a>
-                        <a class="nav-item nav-link active" href="#" th:href="@{/loginPage}">Войти<span class="sr-only">(current)</span></a>
+                        <a class="nav-item nav-link disabled" href="#" th:href="@{/tasks/all}">Задачи<span class="sr-only">(current)</span></a>
+                        <a class="nav-item nav-link" th:href="@{/users/formAdd}">Регистрация</a>
+                        <a class="nav-item nav-link active" href="#" th:href="@{/users/auth}">Войти<span class="sr-only">(current)</span></a>
                     </div>
                 </div>
             </nav>
@@ -37,7 +37,24 @@
             <div class="row">
                 <div class="card" style="width: 100%">
                     <div class="card-header">
-                        Пользователь существует
+                        Авторизация
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${fail}" class="alert alert-danger" role="alert">
+                            Неверный логин или пароль
+                        </div>
+                        <form th:action="@{/users/login}" method="POST" enctype="multipart/form-data">
+                            <input type="hidden" required name="id" value="0"/>
+                            <div class="form-group">
+                                <label for="login">Логин</label>
+                                <input type="text" class="form-control" required name="login" id="login">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Пароль</label>
+                                <input type="text" class="form-control" required name="password" id="password">
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-3">Войти</button>
+                        </form>
                     </div>
                 </div>
             </div>

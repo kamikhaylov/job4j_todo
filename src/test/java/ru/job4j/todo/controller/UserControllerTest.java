@@ -50,7 +50,7 @@ class UserControllerTest {
         String page = userController.addUser(model);
 
         verify(model).addAttribute("user", new User(0, "", "", ""));
-        Assertions.assertEquals(page, "createUser");
+        Assertions.assertEquals(page, "users/create");
     }
 
     @Test
@@ -63,7 +63,7 @@ class UserControllerTest {
 
         verify(service).add(user);
         verify(model).addAttribute("message", "");
-        Assertions.assertEquals(page, "redirect:/userFail");
+        Assertions.assertEquals(page, "redirect:/users/fail");
     }
 
     @Test
@@ -75,37 +75,37 @@ class UserControllerTest {
         String page = userController.registration(model, user);
 
         verify(service).add(user);
-        Assertions.assertEquals(page, "redirect:/userSuccess");
+        Assertions.assertEquals(page, "redirect:/users/success");
     }
 
     @Test
-    public void whenUserSuccess() {
+    public void whenSuccess() {
         UserController userController = new UserController(service);
         User user = new User(ID_TEST, NAME_TEST, LOGIN_TEST, PASS_TEST);
 
-        String page = userController.userSuccess(user);
+        String page = userController.success(user);
 
-        Assertions.assertEquals(page, "userSuccess");
+        Assertions.assertEquals(page, "users/success");
     }
 
     @Test
-    public void whenUserFail() {
+    public void whenFail() {
         UserController userController = new UserController(service);
         User user = new User(ID_TEST, NAME_TEST, LOGIN_TEST, PASS_TEST);
 
-        String page = userController.userFail(user);
+        String page = userController.fail(user);
 
-        Assertions.assertEquals(page, "userFail");
+        Assertions.assertEquals(page, "users/fail");
     }
 
     @Test
     public void whenLoginPage() {
         UserController userController = new UserController(service);
 
-        String page = userController.loginPage(model, true);
+        String page = userController.auth(model, true);
 
         verify(model).addAttribute("fail", true);
-        Assertions.assertEquals(page, "login");
+        Assertions.assertEquals(page, "users/login");
     }
 
     @Test
@@ -117,7 +117,7 @@ class UserControllerTest {
         String page = userController.login(user, req);
 
         verify(service).findUser(user);
-        Assertions.assertEquals(page, "redirect:/loginPage?fail=true");
+        Assertions.assertEquals(page, "redirect:/users/auth?fail=true");
     }
 
     @Test
@@ -140,6 +140,6 @@ class UserControllerTest {
         String page = userController.logout(httpSession);
 
         verify(httpSession).invalidate();
-        Assertions.assertEquals(page, "redirect:/loginPage");
+        Assertions.assertEquals(page, "redirect:/users/auth");
     }
 }

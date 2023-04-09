@@ -1,5 +1,6 @@
 package ru.job4j.todo.common;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -23,15 +24,15 @@ import static java.util.Objects.isNull;
 public class AuthFilter implements Filter {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthFilter.class.getName());
     private static final String USER = "user";
-    private static final String LOGIN_PAGE = "/loginPage";
+    private static final String LOGIN_PAGE = "users/auth";
 
     private final Set<String> addresses = Set.of(
-            "formAddUser",
-            "registration",
-            "userSuccess",
-            "userFail",
-            "loginPage",
-            "login"
+            "users/formAdd",
+            "users/registration",
+            "users/success",
+            "users/fail",
+            "users/login",
+            "users/auth"
     );
 
     @Override
@@ -54,13 +55,7 @@ public class AuthFilter implements Filter {
     }
 
     private boolean addressPresent(String uri) {
-        boolean result = false;
-        for (String address : addresses) {
-            if (uri.endsWith(address)) {
-                result = true;
-                break;
-            }
-        }
-        return result;
+        return addresses.stream()
+                .anyMatch(address -> uri.endsWith(address));
     }
 }

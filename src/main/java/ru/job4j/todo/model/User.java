@@ -2,7 +2,11 @@ package ru.job4j.todo.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,9 +23,12 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "users",
         uniqueConstraints = {
         @UniqueConstraint(columnNames = {"login"})})
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 public class User {
 
     /** Идентификатор пользователя */
@@ -33,6 +40,7 @@ public class User {
     @Column(name = "name")
     private String name;
     /** Логин */
+    @EqualsAndHashCode.Include
     @Column(name = "login")
     private String login;
     /** Пароль */

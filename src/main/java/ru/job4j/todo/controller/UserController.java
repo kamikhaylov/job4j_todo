@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.job4j.todo.common.UserSession;
 import ru.job4j.todo.model.User;
@@ -22,6 +23,7 @@ import java.util.Optional;
  */
 @ThreadSafe
 @Controller
+@RequestMapping("/users")
 public class UserController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class.getName());
 
@@ -31,11 +33,11 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/formAddUser")
+    @GetMapping("/formAdd")
     public String addUser(Model model) {
         LOGGER.info("Добавление пользователя");
         model.addAttribute("user", new User(0, "", "", ""));
-        return "createUser";
+        return "users/create";
     }
 
     @PostMapping("/registration")
@@ -45,29 +47,29 @@ public class UserController {
         Optional<User> regUser = userService.add(user);
         if (regUser.isEmpty()) {
             model.addAttribute("message", "");
-            return "redirect:/userFail";
+            return "redirect:/users/fail";
         }
-        return "redirect:/userSuccess";
+        return "redirect:/users/success";
     }
 
-    @GetMapping("/userSuccess")
-    public String userSuccess(@ModelAttribute User user) {
+    @GetMapping("/success")
+    public String success(@ModelAttribute User user) {
         LOGGER.info("Успешная регистрация");
-        return "userSuccess";
+        return "users/success";
     }
 
-    @GetMapping("/userFail")
-    public String userFail(@ModelAttribute User user) {
+    @GetMapping("/fail")
+    public String fail(@ModelAttribute User user) {
         LOGGER.info("Ошибка в регистрации");
-        return "userFail";
+        return "users/fail";
     }
 
-    @GetMapping("/loginPage")
-    public String loginPage(Model model,
-                            @RequestParam(name = "fail", required = false) Boolean fail) {
+    @GetMapping("/auth")
+    public String auth(Model model,
+                       @RequestParam(name = "fail", required = false) Boolean fail) {
         LOGGER.info("Страница с регистрацией");
         model.addAttribute("fail", fail != null);
-        return "login";
+        return "users/login";
     }
 
     @PostMapping("/login")
@@ -75,7 +77,7 @@ public class UserController {
         LOGGER.info("Логин");
         Optional<User> userDb = userService.findUser(user);
         if (userDb.isEmpty()) {
-            return "redirect:/loginPage?fail=true";
+            return "redirect:/users/auth?fail=true";
         }
         UserSession.create(userDb.get(), req);
         return "redirect:/tasks/all";
@@ -84,6 +86,6 @@ public class UserController {
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         UserSession.invalidate(session);
-        return "redirect:/loginPage";
+        return "redirect:/users/auth";
     }
 }

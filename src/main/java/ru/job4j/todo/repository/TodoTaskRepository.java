@@ -119,7 +119,6 @@ public class TodoTaskRepository implements TaskRepository {
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             session.getTransaction().rollback();
-            return Optional.empty();
         } finally {
             session.close();
         }
