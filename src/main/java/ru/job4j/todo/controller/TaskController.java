@@ -154,8 +154,8 @@ public class TaskController {
      */
     @GetMapping("/done/{taskId}") public String done(@PathVariable("taskId") int id) {
         LOGGER.info("Вызов сервиса выполнения задачи");
-        Optional<Task> result = service.updateDone(id);
-        if (result.isEmpty()) {
+        boolean result = service.updateDone(id);
+        if (!result) {
             return "redirect:/tasks/error?fail=update";
         }
         return "redirect:/tasks/all";

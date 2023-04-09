@@ -117,7 +117,7 @@ class TaskControllerTest {
     public void whenDone() {
         TaskController controller = new TaskController(service);
         Task task = new Task(1, "Task_01", LocalDateTime.now(), true);
-        when(service.updateDone(task.getId())).thenReturn(Optional.of(task));
+        when(service.updateDone(task.getId())).thenReturn(true);
 
         String page = controller.done(ID_TEST);
 
@@ -129,7 +129,7 @@ class TaskControllerTest {
     public void whenDoneFail() {
         TaskController controller = new TaskController(service);
         Task task = new Task(1, "Task_01", LocalDateTime.now(), true);
-        when(service.updateDone(task.getId())).thenReturn(Optional.empty());
+        when(service.updateDone(task.getId())).thenReturn(false);
 
         String page = controller.done(ID_TEST);
 

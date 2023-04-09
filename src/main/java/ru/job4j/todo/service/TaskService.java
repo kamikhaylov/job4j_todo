@@ -64,7 +64,7 @@ public class TaskService {
      * Обновить признак выполнения задачи.
      * @return задача.
      */
-    public Optional<Task> updateDone(int id) {
+    public boolean updateDone(int id) {
         return repository.updateDone(id);
     }
 

@@ -39,9 +39,9 @@ public interface TaskRepository {
     /**
      * Обновляет признак у задачи.
      * @param id идентификатор задачи.
-     * @return задача.
+     * @return результат.
      */
-    Optional<Task> updateDone(int id);
+    boolean updateDone(int id);
 
     /**
      * Удалить задачу.

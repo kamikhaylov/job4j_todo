@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.Task;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,11 +36,13 @@ public class TodoTaskRepository implements TaskRepository {
         List<Task> tasks = new ArrayList<>();
         Session session = sf.openSession();
         try {
+            session.beginTransaction();
             tasks = session
                     .createQuery("FROM Task", Task.class)
                     .list();
+            session.getTransaction().commit();
         } catch (Exception e) {
-            LOGGER.error(Arrays.toString(e.getStackTrace()));
+            LOGGER.error(e.getMessage(), e);
         } finally {
             session.close();
         }
@@ -61,12 +62,14 @@ public class TodoTaskRepository implements TaskRepository {
         Optional<Task> task = Optional.empty();
         Session session = sf.openSession();
         try {
+            session.beginTransaction();
             task = session
                     .createQuery("FROM Task t WHERE t.id = :fId", Task.class)
                     .setParameter("fId", id)
                     .uniqueResultOptional();
+            session.getTransaction().commit();
         } catch (Exception e) {
-            LOGGER.error(Arrays.toString(e.getStackTrace()));
+            LOGGER.error(e.getMessage(), e);
         } finally {
             session.close();
         }
@@ -91,7 +94,7 @@ public class TodoTaskRepository implements TaskRepository {
             session.getTransaction().commit();
             LOGGER.info("Задача в БД добавлена: " + task);
         } catch (Exception e) {
-            LOGGER.error(Arrays.toString(e.getStackTrace()));
+            LOGGER.error(e.getMessage(), e);
             session.getTransaction().rollback();
         } finally {
             session.close();
@@ -114,7 +117,7 @@ public class TodoTaskRepository implements TaskRepository {
             session.update(task);
             session.getTransaction().commit();
         } catch (Exception e) {
-            LOGGER.error(Arrays.toString(e.getStackTrace()));
+            LOGGER.error(e.getMessage(), e);
             session.getTransaction().rollback();
             return Optional.empty();
         } finally {
@@ -129,24 +132,24 @@ public class TodoTaskRepository implements TaskRepository {
      * @return задача.
      */
     @Override
-    public Optional<Task> updateDone(int id) {
+    public boolean updateDone(int id) {
         LOGGER.info("Обновление признака задачи в БД: " + id);
         Session session = sf.openSession();
+        int result = 0;
         try {
             session.beginTransaction();
-            session.createQuery(
+            result = session.createQuery(
                     "UPDATE Task SET done = 'true' WHERE id = :fId")
                     .setParameter("fId", id)
                     .executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e) {
-            LOGGER.error(Arrays.toString(e.getStackTrace()));
+            LOGGER.error(e.getMessage(), e);
             session.getTransaction().rollback();
-            return Optional.empty();
         } finally {
             session.close();
         }
-        return findById(id);
+        return result > 0;
     }
 
     /**
@@ -158,20 +161,20 @@ public class TodoTaskRepository implements TaskRepository {
         LOGGER.info("Удаление задачи в БД: " + id);
 
         Session session = sf.openSession();
+        int result = 0;
         try {
             session.beginTransaction();
-            session.createQuery("DELETE Task WHERE id = :fId")
+            result = session.createQuery("DELETE Task WHERE id = :fId")
                     .setParameter("fId", id)
                     .executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e) {
-            LOGGER.error(Arrays.toString(e.getStackTrace()));
+            LOGGER.error(e.getMessage(), e);
             session.getTransaction().rollback();
-            return false;
         } finally {
             session.close();
         }
-        return true;
+        return result > 0;
     }
 
     /**
@@ -185,12 +188,14 @@ public class TodoTaskRepository implements TaskRepository {
         List<Task> tasks = new ArrayList<>();
         Session session = sf.openSession();
         try {
+            session.beginTransaction();
             tasks = session
                     .createQuery("FROM Task t WHERE t.done = :fDone", Task.class)
                     .setParameter("fDone", done)
                     .list();
+            session.getTransaction().commit();
         } catch (Exception e) {
-            LOGGER.error(Arrays.toString(e.getStackTrace()));
+            LOGGER.error(e.getMessage(), e);
             session.getTransaction().rollback();
         } finally {
             session.close();
