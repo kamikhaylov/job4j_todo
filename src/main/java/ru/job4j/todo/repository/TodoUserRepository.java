@@ -34,10 +34,12 @@ public class TodoUserRepository implements UserRepository {
         LOGGER.info("Добавление пользователя: " + user);
 
         Session session = sf.openSession();
+        Optional<User> result = Optional.empty();
         try {
             session.beginTransaction();
             session.save(user);
             session.getTransaction().commit();
+            result = Optional.of(user);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             session.getTransaction().rollback();
@@ -46,7 +48,7 @@ public class TodoUserRepository implements UserRepository {
         }
 
         LOGGER.info("Задача в БД добавлена: " + user);
-        return findUser(user);
+        return result;
     }
 
     /**
