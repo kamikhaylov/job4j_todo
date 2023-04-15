@@ -19,10 +19,12 @@ import java.util.stream.Stream;
 
 class TodoUserRepositoryTest {
     private static SessionFactory sf;
+    private static CrudRepository crudRepository;
 
     @BeforeAll
     public static void before() {
         sf = new HibernateConfiguration().sf();
+        crudRepository = new CrudRepositoryImpl(sf);
     }
 
     @AfterAll
@@ -41,7 +43,7 @@ class TodoUserRepositoryTest {
 
     @Test()
     public void whenAdd() {
-        TodoUserRepository store = new TodoUserRepository(sf);
+        UserRepository store = new TodoUserRepository(crudRepository);
         User user1 = new User(0, "user1", "login1", "123");
         User user2 = new User(1, "user2", "login2", "321");
 
@@ -64,7 +66,7 @@ class TodoUserRepositoryTest {
 
     @Test()
     public void whenAddUserThenFail() {
-        TodoUserRepository store = new TodoUserRepository(sf);
+        UserRepository store = new TodoUserRepository(crudRepository);
         User user1 = new User(0, "user1", "login", "123");
         User user2 = new User(1, "user2", "login", "321");
 
@@ -84,7 +86,7 @@ class TodoUserRepositoryTest {
 
     @Test()
     public void whenFindUser() {
-        TodoUserRepository store = new TodoUserRepository(sf);
+        UserRepository store = new TodoUserRepository(crudRepository);
         User user1 = new User(0, "user1", "login1", "123");
         User user2 = new User(1, "user2", "login2", "321");
         store.add(user1);
@@ -108,7 +110,7 @@ class TodoUserRepositoryTest {
     @ParameterizedTest
     @MethodSource("userProvider")
     public void whenFindUserFail(String name, String login, String password) {
-        TodoUserRepository store = new TodoUserRepository(sf);
+        UserRepository store = new TodoUserRepository(crudRepository);
         User user = new User(0, name, login, password);
         store.add(user);
 

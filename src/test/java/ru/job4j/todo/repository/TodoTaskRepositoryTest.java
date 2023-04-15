@@ -17,11 +17,13 @@ import java.util.Optional;
 
 class TodoTaskRepositoryTest {
     private static SessionFactory sf;
-    private DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+    private static CrudRepository crudRepository;
+    private final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
     @BeforeAll
     public static void before() {
         sf = new HibernateConfiguration().sf();
+        crudRepository = new CrudRepositoryImpl(sf);
     }
 
     @AfterAll
@@ -40,7 +42,7 @@ class TodoTaskRepositoryTest {
 
     @Test
     public void whenAdd() {
-        TodoTaskRepository store = new TodoTaskRepository(sf);
+        TaskRepository store = new TodoTaskRepository(crudRepository);
         Task task1 = new Task(1, "description1", LocalDateTime.now(), false);
         Task task2 = new Task(2, "description2", LocalDateTime.now(), false);
 
@@ -65,7 +67,7 @@ class TodoTaskRepositoryTest {
 
     @Test
     public void whenUpdate() {
-        TodoTaskRepository store = new TodoTaskRepository(sf);
+        TaskRepository store = new TodoTaskRepository(crudRepository);
         Task task1 = new Task(1, "description4", LocalDateTime.now(), false);
         Task task2 = new Task(1, "description5", LocalDateTime.now(), false);
 
@@ -88,7 +90,7 @@ class TodoTaskRepositoryTest {
 
     @Test
     public void whenUpdateDone() {
-        TodoTaskRepository store = new TodoTaskRepository(sf);
+        TaskRepository store = new TodoTaskRepository(crudRepository);
         Task task = new Task(1, "description8", LocalDateTime.now(), false);
 
         Task addResult = store.add(task);
@@ -105,7 +107,7 @@ class TodoTaskRepositoryTest {
 
     @Test
     public void whenDelete() {
-        TodoTaskRepository store = new TodoTaskRepository(sf);
+        TaskRepository store = new TodoTaskRepository(crudRepository);
         Task task1 = new Task(1, "description1", LocalDateTime.now(), false);
         Task task2 = new Task(2, "description2", LocalDateTime.now(), false);
 
@@ -125,7 +127,7 @@ class TodoTaskRepositoryTest {
 
     @Test
     public void whenFindNew() {
-        TodoTaskRepository store = new TodoTaskRepository(sf);
+        TaskRepository store = new TodoTaskRepository(crudRepository);
         Task task1 = new Task(1, "description1", LocalDateTime.now(), true);
         Task task2 = new Task(2, "description2", LocalDateTime.now(), false);
 
@@ -144,7 +146,7 @@ class TodoTaskRepositoryTest {
 
     @Test
     public void whenFindCompleted() {
-        TodoTaskRepository store = new TodoTaskRepository(sf);
+        TaskRepository store = new TodoTaskRepository(crudRepository);
         Task task1 = new Task(1, "description1", LocalDateTime.now(), false);
         Task task2 = new Task(2, "description2", LocalDateTime.now(), true);
 

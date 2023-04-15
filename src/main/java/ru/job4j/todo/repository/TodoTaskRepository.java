@@ -2,8 +2,6 @@ package ru.job4j.todo.repository;
 
 import lombok.AllArgsConstructor;
 import net.jcip.annotations.ThreadSafe;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -11,6 +9,7 @@ import ru.job4j.todo.model.Task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -23,7 +22,7 @@ public class TodoTaskRepository implements TaskRepository {
     private static final Logger LOGGER =
             LoggerFactory.getLogger(TodoTaskRepository.class.getName());
 
-    private final SessionFactory sf;
+    private final CrudRepository crudRepository;
 
     /**
      * Получение списка задач из БД.
@@ -32,21 +31,12 @@ public class TodoTaskRepository implements TaskRepository {
     @Override
     public List<Task> findAll() {
         LOGGER.info("Запущен поиск всех задач в БД");
-
         List<Task> tasks = new ArrayList<>();
-        Session session = sf.openSession();
         try {
-            session.beginTransaction();
-            tasks = session
-                    .createQuery("FROM Task", Task.class)
-                    .list();
-            session.getTransaction().commit();
+            tasks = crudRepository.query("FROM Task", Task.class);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
-        } finally {
-            session.close();
         }
-
         return tasks;
     }
 
@@ -58,23 +48,16 @@ public class TodoTaskRepository implements TaskRepository {
     @Override
     public Optional<Task> findById(int id) {
         LOGGER.info("Запущен поиск задачи по Id");
-
         Optional<Task> task = Optional.empty();
-        Session session = sf.openSession();
         try {
-            session.beginTransaction();
-            task = session
-                    .createQuery("FROM Task t WHERE t.id = :fId", Task.class)
-                    .setParameter("fId", id)
-                    .uniqueResultOptional();
-            session.getTransaction().commit();
+            task = crudRepository.optional(
+                    "FROM Task t WHERE t.id = :fId", Task.class,
+                    Map.of("fId", id)
+            );
+            LOGGER.info("Поиск задачи по Id в БД завершен, найденная задача: " + Optional.of(task));
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
-        } finally {
-            session.close();
         }
-
-        LOGGER.info("Поиск задачи по Id в БД завершен, найденная задача: " + Optional.of(task));
         return task;
     }
 
@@ -86,18 +69,11 @@ public class TodoTaskRepository implements TaskRepository {
     @Override
     public Task add(Task task) {
         LOGGER.info("Добавление новой задачи в БД");
-
-        Session session = sf.openSession();
         try {
-            session.beginTransaction();
-            session.save(task);
-            session.getTransaction().commit();
+            crudRepository.run(session -> session.save(task));
             LOGGER.info("Задача в БД добавлена: " + task);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
         }
         return task;
     }
@@ -110,17 +86,10 @@ public class TodoTaskRepository implements TaskRepository {
     @Override
     public Optional<Task> update(Task task) {
         LOGGER.info("Обновление задачи в БД: " + task);
-
-        Session session = sf.openSession();
         try {
-            session.beginTransaction();
-            session.update(task);
-            session.getTransaction().commit();
+            crudRepository.run(session -> session.merge(task));
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
         }
         return findById(task.getId());
     }
@@ -133,22 +102,17 @@ public class TodoTaskRepository implements TaskRepository {
     @Override
     public boolean updateDone(int id) {
         LOGGER.info("Обновление признака задачи в БД: " + id);
-        Session session = sf.openSession();
-        int result = 0;
+        boolean result = false;
         try {
-            session.beginTransaction();
-            result = session.createQuery(
-                    "UPDATE Task SET done = 'true' WHERE id = :fId")
-                    .setParameter("fId", id)
-                    .executeUpdate();
-            session.getTransaction().commit();
+            crudRepository.run(
+                    "UPDATE Task SET done = 'true' WHERE id = :fId",
+                    Map.of("fId", id)
+            );
+            result = true;
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
         }
-        return result > 0;
+        return result;
     }
 
     /**
@@ -158,22 +122,17 @@ public class TodoTaskRepository implements TaskRepository {
     @Override
     public boolean delete(int id) {
         LOGGER.info("Удаление задачи в БД: " + id);
-
-        Session session = sf.openSession();
-        int result = 0;
+        boolean result = false;
         try {
-            session.beginTransaction();
-            result = session.createQuery("DELETE Task WHERE id = :fId")
-                    .setParameter("fId", id)
-                    .executeUpdate();
-            session.getTransaction().commit();
+            crudRepository.run(
+                    "DELETE Task WHERE id = :fId",
+                    Map.of("fId", id)
+            );
+            result = true;
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
         }
-        return result > 0;
+        return result;
     }
 
     /**
@@ -183,24 +142,16 @@ public class TodoTaskRepository implements TaskRepository {
      */
     public List<Task> findByDone(boolean done) {
         LOGGER.info("Запущен поиск выполненных задач в БД");
-
         List<Task> tasks = new ArrayList<>();
-        Session session = sf.openSession();
         try {
-            session.beginTransaction();
-            tasks = session
-                    .createQuery("FROM Task t WHERE t.done = :fDone", Task.class)
-                    .setParameter("fDone", done)
-                    .list();
-            session.getTransaction().commit();
+            tasks = crudRepository.query(
+                    "FROM Task t WHERE t.done = :fDone", Task.class,
+                    Map.of("fDone", done)
+            );
+            LOGGER.info("Поиск задач в БД завершен, найденные задачи: " + tasks);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
         }
-
-        LOGGER.info("Поиск задач в БД завершен, найденные задачи: " + tasks);
         return tasks;
     }
 }
