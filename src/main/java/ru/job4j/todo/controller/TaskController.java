@@ -194,6 +194,7 @@ public class TaskController {
     public String update(Model model, @ModelAttribute Task task, HttpSession httpSession) {
         LOGGER.info("Сохранение отредактированной задачи: " + task);
         User user = UserSession.getUser(model, httpSession);
+        task.setUser(user);
         Optional<Task> result = service.update(task);
         model.addAttribute("user", user);
         if (result.isEmpty()) {
