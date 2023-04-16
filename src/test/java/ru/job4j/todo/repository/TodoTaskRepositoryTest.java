@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import ru.job4j.todo.config.HibernateConfiguration;
 import ru.job4j.todo.model.Task;
+import ru.job4j.todo.model.User;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,6 +17,8 @@ import java.util.List;
 import java.util.Optional;
 
 class TodoTaskRepositoryTest {
+    private static final User USER = new User(1, "User", "login", "pass");
+
     private static SessionFactory sf;
     private static CrudRepository crudRepository;
     private final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
@@ -24,6 +27,8 @@ class TodoTaskRepositoryTest {
     public static void before() {
         sf = new HibernateConfiguration().sf();
         crudRepository = new CrudRepositoryImpl(sf);
+        UserRepository userStore = new TodoUserRepository(crudRepository);
+        userStore.add(USER);
     }
 
     @AfterAll
@@ -43,8 +48,8 @@ class TodoTaskRepositoryTest {
     @Test
     public void whenAdd() {
         TaskRepository store = new TodoTaskRepository(crudRepository);
-        Task task1 = new Task(1, "description1", LocalDateTime.now(), false);
-        Task task2 = new Task(2, "description2", LocalDateTime.now(), false);
+        Task task1 = new Task(1, "description1", LocalDateTime.now(), false, USER);
+        Task task2 = new Task(2, "description2", LocalDateTime.now(), false, USER);
 
         Task addResult1 = store.add(task1);
         Task addResult2 = store.add(task2);
@@ -68,8 +73,8 @@ class TodoTaskRepositoryTest {
     @Test
     public void whenUpdate() {
         TaskRepository store = new TodoTaskRepository(crudRepository);
-        Task task1 = new Task(1, "description4", LocalDateTime.now(), false);
-        Task task2 = new Task(1, "description5", LocalDateTime.now(), false);
+        Task task1 = new Task(1, "description4", LocalDateTime.now(), false, USER);
+        Task task2 = new Task(1, "description5", LocalDateTime.now(), false, USER);
 
         Task addResult1 =  store.add(task1);
         task2.setId(addResult1.getId());
@@ -91,7 +96,7 @@ class TodoTaskRepositoryTest {
     @Test
     public void whenUpdateDone() {
         TaskRepository store = new TodoTaskRepository(crudRepository);
-        Task task = new Task(1, "description8", LocalDateTime.now(), false);
+        Task task = new Task(1, "description8", LocalDateTime.now(), false, USER);
 
         Task addResult = store.add(task);
         store.updateDone(addResult.getId());
@@ -108,8 +113,8 @@ class TodoTaskRepositoryTest {
     @Test
     public void whenDelete() {
         TaskRepository store = new TodoTaskRepository(crudRepository);
-        Task task1 = new Task(1, "description1", LocalDateTime.now(), false);
-        Task task2 = new Task(2, "description2", LocalDateTime.now(), false);
+        Task task1 = new Task(1, "description1", LocalDateTime.now(), false, USER);
+        Task task2 = new Task(2, "description2", LocalDateTime.now(), false, USER);
 
         Task addResult1 = store.add(task1);
         store.add(task2);
@@ -128,8 +133,8 @@ class TodoTaskRepositoryTest {
     @Test
     public void whenFindNew() {
         TaskRepository store = new TodoTaskRepository(crudRepository);
-        Task task1 = new Task(1, "description1", LocalDateTime.now(), true);
-        Task task2 = new Task(2, "description2", LocalDateTime.now(), false);
+        Task task1 = new Task(1, "description1", LocalDateTime.now(), true, USER);
+        Task task2 = new Task(2, "description2", LocalDateTime.now(), false, USER);
 
         store.add(task1);
         store.add(task2);
@@ -147,8 +152,8 @@ class TodoTaskRepositoryTest {
     @Test
     public void whenFindCompleted() {
         TaskRepository store = new TodoTaskRepository(crudRepository);
-        Task task1 = new Task(1, "description1", LocalDateTime.now(), false);
-        Task task2 = new Task(2, "description2", LocalDateTime.now(), true);
+        Task task1 = new Task(1, "description1", LocalDateTime.now(), false, USER);
+        Task task2 = new Task(2, "description2", LocalDateTime.now(), true, USER);
 
         store.add(task1);
         store.add(task2);

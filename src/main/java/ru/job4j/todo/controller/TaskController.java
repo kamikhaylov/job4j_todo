@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import ru.job4j.todo.common.UserSession;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
@@ -113,11 +114,12 @@ public class TaskController {
      * @return возвращает страницу со списком всех заданий
      */
     @PostMapping("/add")
-    public String addTask(@ModelAttribute Task task) {
+    public String addTask(@ModelAttribute Task task, @SessionAttribute User user) {
         LOGGER.info("Вызов сервиса добавления новой задачи");
 
         task.setCreated(LocalDateTime.now());
         task.setDone(false);
+        task.setUser(user);
         Task result = service.add(task);
 
         LOGGER.info("Добавленная задача: " + result);
