@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.ui.Model;
+import ru.job4j.todo.model.Priority;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.TaskService;
@@ -23,8 +24,8 @@ import static org.mockito.Mockito.when;
 
 class TaskControllerTest {
     private static final int ID_TEST = 1;
-
-    private final User user = new User(1, "User", "login", "pass");
+    private static final User USER = new User(1, "User", "login", "pass");
+    private static final Priority PRIORITY = new Priority(1, "Средний", 2);
 
     @Mock
     private Model model;
@@ -46,8 +47,8 @@ class TaskControllerTest {
     @Test
     public void whenTasks() {
         List<Task> tasks = Arrays.asList(
-                new Task(1, "Task_01", LocalDateTime.now(), false, user),
-                new Task(2, "Task_02", LocalDateTime.now(), true, user)
+                new Task(1, "Task_01", LocalDateTime.now(), false, USER, PRIORITY),
+                new Task(2, "Task_02", LocalDateTime.now(), true, USER, PRIORITY)
         );
         when(service.findAll()).thenReturn(tasks);
         TaskController controller = new TaskController(service);
@@ -60,8 +61,8 @@ class TaskControllerTest {
     @Test
     public void whenNewTasks() {
         List<Task> tasks = Arrays.asList(
-                new Task(1, "Task_01", LocalDateTime.now(), false, user),
-                new Task(2, "Task_02", LocalDateTime.now(), false, user)
+                new Task(1, "Task_01", LocalDateTime.now(), false, USER, PRIORITY),
+                new Task(2, "Task_02", LocalDateTime.now(), false, USER, PRIORITY)
         );
         when(service.findByDone(false)).thenReturn(tasks);
         TaskController controller = new TaskController(service);
@@ -74,8 +75,8 @@ class TaskControllerTest {
     @Test
     public void whenDoneTasks() {
         List<Task> tasks = Arrays.asList(
-                new Task(1, "Task_01", LocalDateTime.now(), true, user),
-                new Task(2, "Task_02", LocalDateTime.now(), true, user)
+                new Task(1, "Task_01", LocalDateTime.now(), true, USER, PRIORITY),
+                new Task(2, "Task_02", LocalDateTime.now(), true, USER, PRIORITY)
         );
         when(service.findByDone(true)).thenReturn(tasks);
         TaskController controller = new TaskController(service);
@@ -95,10 +96,10 @@ class TaskControllerTest {
 
     @Test
     public void whenAddTask() {
-        Task task = new Task(1, "Task_01", LocalDateTime.now(), false, user);
+        Task task = new Task(1, "Task_01", LocalDateTime.now(), false, USER, PRIORITY);
         when(service.add(task)).thenReturn(task);
         TaskController controller = new TaskController(service);
-        String page = controller.addTask(task, user);
+        String page = controller.addTask(task, USER);
 
         verify(service).add(task);
         Assertions.assertEquals(page, "redirect:/tasks/all");
@@ -106,7 +107,7 @@ class TaskControllerTest {
 
     @Test
     public void whenTask() {
-        Task task = new Task(ID_TEST, "Task_01", LocalDateTime.now(), false, user);
+        Task task = new Task(ID_TEST, "Task_01", LocalDateTime.now(), false, USER, PRIORITY);
         when(service.findById(ID_TEST)).thenReturn(Optional.of(task));
         TaskController controller = new TaskController(service);
         String page = controller.task(model, ID_TEST, httpSession);
@@ -119,7 +120,7 @@ class TaskControllerTest {
     @Test
     public void whenDone() {
         TaskController controller = new TaskController(service);
-        Task task = new Task(1, "Task_01", LocalDateTime.now(), true, user);
+        Task task = new Task(1, "Task_01", LocalDateTime.now(), true, USER, PRIORITY);
         when(service.updateDone(task.getId())).thenReturn(true);
 
         String page = controller.done(ID_TEST);
@@ -131,7 +132,7 @@ class TaskControllerTest {
     @Test
     public void whenDoneFail() {
         TaskController controller = new TaskController(service);
-        Task task = new Task(1, "Task_01", LocalDateTime.now(), true, user);
+        Task task = new Task(1, "Task_01", LocalDateTime.now(), true, USER, PRIORITY);
         when(service.updateDone(task.getId())).thenReturn(false);
 
         String page = controller.done(ID_TEST);
@@ -142,7 +143,7 @@ class TaskControllerTest {
 
     @Test
     public void whenFormUpdateTask() {
-        Task task = new Task(ID_TEST, "Task_01", LocalDateTime.now(), true, user);
+        Task task = new Task(ID_TEST, "Task_01", LocalDateTime.now(), true, USER, PRIORITY);
         when(service.findById(ID_TEST)).thenReturn(Optional.of(task));
         TaskController controller = new TaskController(service);
         String page = controller.formUpdateTask(model, ID_TEST, httpSession);
@@ -153,7 +154,7 @@ class TaskControllerTest {
 
     @Test
     public void whenUpdate() {
-        Task task = new Task(1, "Task_01", LocalDateTime.now(), true, user);
+        Task task = new Task(1, "Task_01", LocalDateTime.now(), true, USER, PRIORITY);
         TaskController controller = new TaskController(service);
         when(service.update(task)).thenReturn(Optional.of(task));
 
@@ -165,7 +166,7 @@ class TaskControllerTest {
 
     @Test
     public void whenUpdateFail() {
-        Task task = new Task(1, "Task_01", LocalDateTime.now(), true, user);
+        Task task = new Task(1, "Task_01", LocalDateTime.now(), true, USER, PRIORITY);
         TaskController controller = new TaskController(service);
         when(service.update(task)).thenReturn(Optional.empty());
 

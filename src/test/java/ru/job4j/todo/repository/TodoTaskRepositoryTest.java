@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import ru.job4j.todo.config.HibernateConfiguration;
+import ru.job4j.todo.model.Priority;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
 
@@ -18,16 +19,23 @@ import java.util.Optional;
 
 class TodoTaskRepositoryTest {
     private static final User USER = new User(1, "User", "login", "pass");
+    private static final Priority PRIORITY = new Priority(1, "Средний", 2);
 
     private static SessionFactory sf;
     private static CrudRepository crudRepository;
+    private static UserRepository userStore;
+    private static PriorityRepository priorityRepository;
     private final DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
     @BeforeAll
     public static void before() {
         sf = new HibernateConfiguration().sf();
+        HibernateConfiguration hc = new HibernateConfiguration();
+        sf = hc.sf();
         crudRepository = new CrudRepositoryImpl(sf);
-        UserRepository userStore = new TodoUserRepository(crudRepository);
+        userStore = new TodoUserRepository(crudRepository);
+        priorityRepository = new TodoPriorityRepository(crudRepository);
+        priorityRepository.add(PRIORITY);
         userStore.add(USER);
     }
 
@@ -47,17 +55,21 @@ class TodoTaskRepositoryTest {
 
     @Test
     public void whenAdd() {
-        TaskRepository store = new TodoTaskRepository(crudRepository);
-        Task task1 = new Task(1, "description1", LocalDateTime.now(), false, USER);
-        Task task2 = new Task(2, "description2", LocalDateTime.now(), false, USER);
+        TaskRepository taskRepository = new TodoTaskRepository(crudRepository);
+        List<Priority> priorities = priorityRepository.getPriorities();
 
-        Task addResult1 = store.add(task1);
-        Task addResult2 = store.add(task2);
-        List<Task> users = store.findAll();
+        Task task1 = new Task(1, "description1", LocalDateTime.now(),
+                false, userStore.findUser(USER).get(), priorities.get(0));
+        Task task2 = new Task(2, "description2", LocalDateTime.now(),
+                false, userStore.findUser(USER).get(), priorities.get(0));
+
+        Task addResult1 = taskRepository.add(task1);
+        Task addResult2 = taskRepository.add(task2);
+        List<Task> tasks = taskRepository.findAll();
 
         Assertions.assertNotNull(addResult1);
         Assertions.assertNotNull(addResult2);
-        Assertions.assertEquals(users.size(), 2);
+        Assertions.assertEquals(tasks.size(), 2);
         Assertions.assertEquals(addResult1.getId(), task1.getId());
         Assertions.assertEquals(addResult1.getDescription(), task1.getDescription());
         Assertions.assertEquals(
@@ -72,15 +84,19 @@ class TodoTaskRepositoryTest {
 
     @Test
     public void whenUpdate() {
-        TaskRepository store = new TodoTaskRepository(crudRepository);
-        Task task1 = new Task(1, "description4", LocalDateTime.now(), false, USER);
-        Task task2 = new Task(1, "description5", LocalDateTime.now(), false, USER);
+        TaskRepository taskRepository = new TodoTaskRepository(crudRepository);
+        List<Priority> priorities = priorityRepository.getPriorities();
 
-        Task addResult1 =  store.add(task1);
+        Task task1 = new Task(1, "description4", LocalDateTime.now(), false,
+                userStore.findUser(USER).get(), priorities.get(0));
+        Task task2 = new Task(1, "description5", LocalDateTime.now(), false,
+                userStore.findUser(USER).get(), priorities.get(0));
+
+        Task addResult1 =  taskRepository.add(task1);
         task2.setId(addResult1.getId());
-        store.update(task2);
-        List<Task> tasks = store.findAll();
-        Optional<Task> result = store.findById(addResult1.getId());
+        taskRepository.update(task2);
+        List<Task> tasks = taskRepository.findAll();
+        Optional<Task> result = taskRepository.findById(addResult1.getId());
 
         Assertions.assertNotNull(tasks);
         Assertions.assertEquals(tasks.size(), 1);
@@ -96,7 +112,9 @@ class TodoTaskRepositoryTest {
     @Test
     public void whenUpdateDone() {
         TaskRepository store = new TodoTaskRepository(crudRepository);
-        Task task = new Task(1, "description8", LocalDateTime.now(), false, USER);
+        List<Priority> priorities = priorityRepository.getPriorities();
+        Task task = new Task(1, "description8", LocalDateTime.now(), false,
+                userStore.findUser(USER).get(), priorities.get(0));
 
         Task addResult = store.add(task);
         store.updateDone(addResult.getId());
@@ -113,8 +131,11 @@ class TodoTaskRepositoryTest {
     @Test
     public void whenDelete() {
         TaskRepository store = new TodoTaskRepository(crudRepository);
-        Task task1 = new Task(1, "description1", LocalDateTime.now(), false, USER);
-        Task task2 = new Task(2, "description2", LocalDateTime.now(), false, USER);
+        List<Priority> priorities = priorityRepository.getPriorities();
+        Task task1 = new Task(1, "description1", LocalDateTime.now(), false,
+                userStore.findUser(USER).get(), priorities.get(0));
+        Task task2 = new Task(2, "description2", LocalDateTime.now(), false,
+                userStore.findUser(USER).get(), priorities.get(0));
 
         Task addResult1 = store.add(task1);
         store.add(task2);
@@ -133,8 +154,11 @@ class TodoTaskRepositoryTest {
     @Test
     public void whenFindNew() {
         TaskRepository store = new TodoTaskRepository(crudRepository);
-        Task task1 = new Task(1, "description1", LocalDateTime.now(), true, USER);
-        Task task2 = new Task(2, "description2", LocalDateTime.now(), false, USER);
+        List<Priority> priorities = priorityRepository.getPriorities();
+        Task task1 = new Task(1, "description1", LocalDateTime.now(), true,
+                userStore.findUser(USER).get(), priorities.get(0));
+        Task task2 = new Task(2, "description2", LocalDateTime.now(), false,
+                userStore.findUser(USER).get(), priorities.get(0));
 
         store.add(task1);
         store.add(task2);
@@ -152,8 +176,11 @@ class TodoTaskRepositoryTest {
     @Test
     public void whenFindCompleted() {
         TaskRepository store = new TodoTaskRepository(crudRepository);
-        Task task1 = new Task(1, "description1", LocalDateTime.now(), false, USER);
-        Task task2 = new Task(2, "description2", LocalDateTime.now(), true, USER);
+        List<Priority> priorities = priorityRepository.getPriorities();
+        Task task1 = new Task(1, "description1", LocalDateTime.now(), false,
+                userStore.findUser(USER).get(), priorities.get(0));
+        Task task2 = new Task(2, "description2", LocalDateTime.now(), true,
+                userStore.findUser(USER).get(), priorities.get(0));
 
         store.add(task1);
         store.add(task2);

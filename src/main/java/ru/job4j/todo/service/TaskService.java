@@ -2,7 +2,9 @@ package ru.job4j.todo.service;
 
 import net.jcip.annotations.ThreadSafe;
 import org.springframework.stereotype.Service;
+import ru.job4j.todo.model.Priority;
 import ru.job4j.todo.model.Task;
+import ru.job4j.todo.repository.PriorityRepository;
 import ru.job4j.todo.repository.TaskRepository;
 
 import java.util.List;
@@ -14,10 +16,12 @@ import java.util.Optional;
 @ThreadSafe
 @Service
 public class TaskService {
-    private final TaskRepository repository;
+    private final TaskRepository taskRepository;
+    private final PriorityRepository priorityRepository;
 
-    public TaskService(TaskRepository repository) {
-        this.repository = repository;
+    public TaskService(TaskRepository taskRepository, PriorityRepository priorityRepository) {
+        this.taskRepository = taskRepository;
+        this.priorityRepository = priorityRepository;
     }
 
     /**
@@ -25,7 +29,7 @@ public class TaskService {
      * @return список задач.
      */
     public List<Task> findAll() {
-        return repository.findAll();
+        return taskRepository.findAll();
     }
 
     /**
@@ -33,7 +37,7 @@ public class TaskService {
      * @return список задач.
      */
     public List<Task> findByDone(boolean done) {
-        return repository.findByDone(done);
+        return taskRepository.findByDone(done);
     }
 
     /**
@@ -41,7 +45,7 @@ public class TaskService {
      * @return задача.
      */
     public Optional<Task> findById(int id) {
-        return repository.findById(id);
+        return taskRepository.findById(id);
     }
 
     /**
@@ -49,7 +53,7 @@ public class TaskService {
      * @return добавленая задача.
      */
     public Task add(Task task) {
-        return repository.add(task);
+        return taskRepository.add(task);
     }
 
     /**
@@ -57,7 +61,7 @@ public class TaskService {
      * @return задача.
      */
     public Optional<Task> update(Task task) {
-        return repository.update(task);
+        return taskRepository.update(task);
     }
 
     /**
@@ -65,7 +69,7 @@ public class TaskService {
      * @return задача.
      */
     public boolean updateDone(int id) {
-        return repository.updateDone(id);
+        return taskRepository.updateDone(id);
     }
 
     /**
@@ -73,6 +77,14 @@ public class TaskService {
      * @return результат удаления.
      */
     public boolean delete(int id) {
-        return repository.delete(id);
+        return taskRepository.delete(id);
+    }
+
+    /**
+     * Получить приоритеты.
+     * @return приоритеты.
+     */
+    public List<Priority> getPriorities() {
+        return priorityRepository.getPriorities();
     }
 }

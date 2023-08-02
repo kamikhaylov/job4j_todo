@@ -8,27 +8,23 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
 
 /**
- * Модель задания
+ * Модель приоритетов
  */
 @Entity
-@Table(name = "tasks")
+@Table(name = "priorities")
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Task {
+public class Priority {
 
     /** Идентификатор задания */
     @Id
@@ -36,22 +32,9 @@ public class Task {
     @EqualsAndHashCode.Include
     private int id;
 
-    /** Описание */
-    private String description;
+    /** Наименнование */
+    private String name;
 
-    /** Дата создания */
-    private LocalDateTime created;
-
-    /** Выполнено */
-    private boolean done;
-
-    /** Пользователь */
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    /** Приоритет */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "priority_id")
-    private Priority priority;
+    /** Позиция */
+    private int position;
 }

@@ -67,13 +67,21 @@
                                 <label for="description">Описание</label>
                                 <input type="text" class="form-control" required name="description" id="description" th:field="*{description}">
                             </div>
+                            <div class="form-group" align="left">
+                                <label for="priority">
+                                    Приоритет
+                                    <select class="form-control" id="priority" name="priority.id">
+                                        <option th:each="priority : ${priorities}" th:value="${priority.id}" th:text="${priority.name}"></option>
+                                    </select>
+                                </label>
+                            </div>
                             <div class="form-group">
                                 <label for="done">Отметка о выполнение</label>
                                 <br>
                                 <input type="checkbox" name="done" id="done" th:field="*{done}">
                             </div>
                             <button type="submit" class="btn btn-primary mt-3">Сохранить</button>
-                            <a th:href="@{|/task/${task.id}|}">
+                            <a th:href="@{|/tasks/task/${task.id}|}">
                                 <button type="button" class="btn btn-primary mt-3">Отменить</button>
                             </a>
                         </form>

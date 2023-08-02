@@ -35,7 +35,7 @@ public class TodoUserRepository implements UserRepository {
         try {
             crudRepository.run(session -> session.save(user));
             result = Optional.of(user);
-            LOGGER.info("Задача в БД добавлена: " + user);
+            LOGGER.info("Пользователь в БД добавлен: " + user);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }

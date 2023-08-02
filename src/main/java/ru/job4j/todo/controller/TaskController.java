@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import ru.job4j.todo.common.UserSession;
+import ru.job4j.todo.model.Priority;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.TaskService;
@@ -105,6 +106,7 @@ public class TaskController {
         LOGGER.info("Создание новой задачи");
 
         model.addAttribute("user", UserSession.getUser(model, httpSession));
+        model.addAttribute("priorities", service.getPriorities());
         return "tasks/create";
     }
 
@@ -182,6 +184,7 @@ public class TaskController {
         }
         model.addAttribute("task", task.get());
         model.addAttribute("user", user);
+        model.addAttribute("priorities", service.getPriorities());
         return "tasks/update";
     }
 
