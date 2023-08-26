@@ -1,12 +1,12 @@
-CREATE TABLE tasks (
-    id SERIAL PRIMARY KEY,
-    description TEXT,
-    created TIMESTAMP,
-    done BOOLEAN
+create table tasks (
+    id              serial primary key,
+    description     varchar,
+    created         timestamp,
+    done            boolean
 );
 
-COMMENT ON TABLE tasks IS 'Задания';
-COMMENT ON COLUMN tasks.id IS 'Идентификатор задания';
-COMMENT ON COLUMN tasks.description IS 'Описание';
-COMMENT ON COLUMN tasks.created IS 'Дата создания';
-COMMENT ON COLUMN tasks.done IS 'Выполнено';
+comment on table tasks is 'Задания';
+comment on column tasks.id is 'Идентификатор задания';
+comment on column tasks.description is 'Описание';
+comment on column tasks.created is 'Дата создания';
+comment on column tasks.done is 'Выполнено';

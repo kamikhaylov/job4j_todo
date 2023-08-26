@@ -1,14 +1,11 @@
 create table priorities
 (
-    id serial primary key,
-    name text not null,
-    position int
+    id          serial primary key,
+    name        varchar not null,
+    position    int
 );
 
-insert into priorities (name, position) values ('Низкий', 1);
-insert into priorities (name, position) values ('Средний', 2);
-insert into priorities (name, position) values ('Срочный', 3);
-
-alter table tasks add column priority_id int references priorities(id);
-
-update tasks set priority_id = (select id from priorities where name = 'Средний');
+comment on table priorities is 'Приоритеты';
+comment on column priorities.id is 'Идентификатор задания';
+comment on column priorities.name is 'Наименнование';
+comment on column priorities.position is 'Позиция';

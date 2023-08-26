@@ -1,14 +1,14 @@
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    name varchar NOT NULL,
-    login varchar NOT NULL UNIQUE,
-    password varchar NOT NULL
+create table users (
+    id          serial primary key,
+    name        varchar not null,
+    login       varchar not null unique,
+    password    varchar not null,
+
+    constraint login_unique unique (login)
 );
 
-ALTER TABLE users ADD CONSTRAINT login_unique UNIQUE (login);
-
-COMMENT ON TABLE users IS 'Пользователи';
-COMMENT ON COLUMN users.id IS 'Идентификатор пользователя';
-COMMENT ON COLUMN users.name IS 'Имя';
-COMMENT ON COLUMN users.login IS 'Логин';
-COMMENT ON COLUMN users.password IS 'Пароль';
+comment on table users is 'Пользователи';
+comment on column users.id is 'Идентификатор пользователя';
+comment on column users.name is 'Имя';
+comment on column users.login is 'Логин';
+comment on column users.password is 'Пароль';
