@@ -64,6 +64,7 @@
                         <th scope="col">Отметка о выполнении</th>
                         <th scope="col">Пользователь</th>
                         <th scope="col">Приоритет</th>
+                        <th scope="col">Категории</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -84,6 +85,11 @@
                             <td width="20%" th:text="${task.user.name}"/>
                             <td width="20%">
                                 <a th:text="${task.priority.name}" th:href="@{/tasks/desc/{id}(id=${task.id})}"></a>
+                            </td>
+                            <td width="20%">
+                                <ul id="categories">
+                                    <li th:each="category : ${task.categories}" th:text="${category.name}"></li>
+                                </ul>
                             </td>
                         </tr>
                     </tbody>

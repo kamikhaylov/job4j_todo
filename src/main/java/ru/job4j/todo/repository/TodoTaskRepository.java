@@ -33,7 +33,13 @@ public class TodoTaskRepository implements TaskRepository {
         LOGGER.info("Запущен поиск всех задач в БД");
         List<Task> tasks = new ArrayList<>();
         try {
-            tasks = crudRepository.query("FROM Task t JOIN FETCH t.priority", Task.class);
+            tasks = crudRepository.query(
+                    "SELECT DISTINCT t FROM Task t "
+                            + "JOIN FETCH t.priority "
+                            + "JOIN FETCH t.categories",
+                    Task.class);
+
+            LOGGER.info("Завершен поиск всех задач в БД: " + tasks);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
@@ -51,7 +57,9 @@ public class TodoTaskRepository implements TaskRepository {
         Optional<Task> task = Optional.empty();
         try {
             task = crudRepository.optional(
-                    "FROM Task t JOIN FETCH t.priority "
+                    "SELECT DISTINCT t FROM Task t "
+                            + "JOIN FETCH t.priority "
+                            + "JOIN FETCH t.categories "
                             + "WHERE t.id = :fId",
                     Task.class,
                     Map.of("fId", id)
@@ -147,7 +155,9 @@ public class TodoTaskRepository implements TaskRepository {
         List<Task> tasks = new ArrayList<>();
         try {
             tasks = crudRepository.query(
-                    "FROM Task t JOIN FETCH t.priority"
+                    "SELECT DISTINCT t FROM Task t "
+                            + "JOIN FETCH t.priority "
+                            + "JOIN FETCH t.categories "
                             + " WHERE t.done = :fDone", Task.class,
                     Map.of("fDone", done)
             );

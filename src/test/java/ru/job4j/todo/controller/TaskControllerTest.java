@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.ui.Model;
+import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Priority;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
@@ -26,6 +27,8 @@ class TaskControllerTest {
     private static final int ID_TEST = 1;
     private static final User USER = new User(1, "User", "login", "pass");
     private static final Priority PRIORITY = new Priority(1, "Средний", 2);
+    private static final List<Category> CATEGORIES = List.of(new Category(1, "Разработка"));
+    private static final List<Integer> CATEGORY_IDS = List.of(1);
 
     @Mock
     private Model model;
@@ -47,8 +50,8 @@ class TaskControllerTest {
     @Test
     public void whenTasks() {
         List<Task> tasks = Arrays.asList(
-                new Task(1, "Task_01", LocalDateTime.now(), false, USER, PRIORITY),
-                new Task(2, "Task_02", LocalDateTime.now(), true, USER, PRIORITY)
+                new Task(1, "Task_01", LocalDateTime.now(), false, USER, PRIORITY, CATEGORIES),
+                new Task(2, "Task_02", LocalDateTime.now(), true, USER, PRIORITY, CATEGORIES)
         );
         when(service.findAll()).thenReturn(tasks);
         TaskController controller = new TaskController(service);
@@ -61,8 +64,8 @@ class TaskControllerTest {
     @Test
     public void whenNewTasks() {
         List<Task> tasks = Arrays.asList(
-                new Task(1, "Task_01", LocalDateTime.now(), false, USER, PRIORITY),
-                new Task(2, "Task_02", LocalDateTime.now(), false, USER, PRIORITY)
+                new Task(1, "Task_01", LocalDateTime.now(), false, USER, PRIORITY, CATEGORIES),
+                new Task(2, "Task_02", LocalDateTime.now(), false, USER, PRIORITY, CATEGORIES)
         );
         when(service.findByDone(false)).thenReturn(tasks);
         TaskController controller = new TaskController(service);
@@ -75,8 +78,8 @@ class TaskControllerTest {
     @Test
     public void whenDoneTasks() {
         List<Task> tasks = Arrays.asList(
-                new Task(1, "Task_01", LocalDateTime.now(), true, USER, PRIORITY),
-                new Task(2, "Task_02", LocalDateTime.now(), true, USER, PRIORITY)
+                new Task(1, "Task_01", LocalDateTime.now(), true, USER, PRIORITY, CATEGORIES),
+                new Task(2, "Task_02", LocalDateTime.now(), true, USER, PRIORITY, CATEGORIES)
         );
         when(service.findByDone(true)).thenReturn(tasks);
         TaskController controller = new TaskController(service);
@@ -96,18 +99,19 @@ class TaskControllerTest {
 
     @Test
     public void whenAddTask() {
-        Task task = new Task(1, "Task_01", LocalDateTime.now(), false, USER, PRIORITY);
-        when(service.add(task)).thenReturn(task);
+        Task task = new Task(1, "Task_01", LocalDateTime.now(), false, USER, PRIORITY, CATEGORIES);
+        when(service.add(task, CATEGORY_IDS)).thenReturn(task);
         TaskController controller = new TaskController(service);
-        String page = controller.addTask(task, USER);
+        String page = controller.addTask(task, USER, CATEGORY_IDS);
 
-        verify(service).add(task);
+        verify(service).add(task, CATEGORY_IDS);
         Assertions.assertEquals(page, "redirect:/tasks/all");
     }
 
     @Test
     public void whenTask() {
-        Task task = new Task(ID_TEST, "Task_01", LocalDateTime.now(), false, USER, PRIORITY);
+        Task task = new Task(ID_TEST, "Task_01", LocalDateTime.now(), false, USER, PRIORITY,
+                CATEGORIES);
         when(service.findById(ID_TEST)).thenReturn(Optional.of(task));
         TaskController controller = new TaskController(service);
         String page = controller.task(model, ID_TEST, httpSession);
@@ -120,7 +124,8 @@ class TaskControllerTest {
     @Test
     public void whenDone() {
         TaskController controller = new TaskController(service);
-        Task task = new Task(1, "Task_01", LocalDateTime.now(), true, USER, PRIORITY);
+        Task task = new Task(1, "Task_01", LocalDateTime.now(), true, USER, PRIORITY,
+                CATEGORIES);
         when(service.updateDone(task.getId())).thenReturn(true);
 
         String page = controller.done(ID_TEST);
@@ -132,7 +137,7 @@ class TaskControllerTest {
     @Test
     public void whenDoneFail() {
         TaskController controller = new TaskController(service);
-        Task task = new Task(1, "Task_01", LocalDateTime.now(), true, USER, PRIORITY);
+        Task task = new Task(1, "Task_01", LocalDateTime.now(), true, USER, PRIORITY, CATEGORIES);
         when(service.updateDone(task.getId())).thenReturn(false);
 
         String page = controller.done(ID_TEST);
@@ -143,7 +148,8 @@ class TaskControllerTest {
 
     @Test
     public void whenFormUpdateTask() {
-        Task task = new Task(ID_TEST, "Task_01", LocalDateTime.now(), true, USER, PRIORITY);
+        Task task = new Task(ID_TEST, "Task_01", LocalDateTime.now(), true, USER, PRIORITY,
+                CATEGORIES);
         when(service.findById(ID_TEST)).thenReturn(Optional.of(task));
         TaskController controller = new TaskController(service);
         String page = controller.formUpdateTask(model, ID_TEST, httpSession);
@@ -154,7 +160,8 @@ class TaskControllerTest {
 
     @Test
     public void whenUpdate() {
-        Task task = new Task(1, "Task_01", LocalDateTime.now(), true, USER, PRIORITY);
+        Task task = new Task(1, "Task_01", LocalDateTime.now(), true, USER, PRIORITY,
+                CATEGORIES);
         TaskController controller = new TaskController(service);
         when(service.update(task)).thenReturn(Optional.of(task));
 
@@ -166,7 +173,7 @@ class TaskControllerTest {
 
     @Test
     public void whenUpdateFail() {
-        Task task = new Task(1, "Task_01", LocalDateTime.now(), true, USER, PRIORITY);
+        Task task = new Task(1, "Task_01", LocalDateTime.now(), true, USER, PRIORITY, CATEGORIES);
         TaskController controller = new TaskController(service);
         when(service.update(task)).thenReturn(Optional.empty());
 

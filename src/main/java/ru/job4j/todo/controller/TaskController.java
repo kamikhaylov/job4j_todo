@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import ru.job4j.todo.common.UserSession;
-import ru.job4j.todo.model.Priority;
+import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.TaskService;
@@ -107,6 +107,7 @@ public class TaskController {
 
         model.addAttribute("user", UserSession.getUser(model, httpSession));
         model.addAttribute("priorities", service.getPriorities());
+        model.addAttribute("categories", service.getCategories());
         return "tasks/create";
     }
 
@@ -116,13 +117,14 @@ public class TaskController {
      * @return возвращает страницу со списком всех заданий
      */
     @PostMapping("/add")
-    public String addTask(@ModelAttribute Task task, @SessionAttribute User user) {
+    public String addTask(@ModelAttribute Task task, @SessionAttribute User user,
+                          @RequestParam("category.ids") List<Integer> categoryIds) {
         LOGGER.info("Вызов сервиса добавления новой задачи");
 
         task.setCreated(LocalDateTime.now());
         task.setDone(false);
         task.setUser(user);
-        Task result = service.add(task);
+        Task result = service.add(task, categoryIds);
 
         LOGGER.info("Добавленная задача: " + result);
         return "redirect:/tasks/all";
@@ -185,6 +187,7 @@ public class TaskController {
         model.addAttribute("task", task.get());
         model.addAttribute("user", user);
         model.addAttribute("priorities", service.getPriorities());
+        model.addAttribute("categories", service.getCategories());
         return "tasks/update";
     }
 

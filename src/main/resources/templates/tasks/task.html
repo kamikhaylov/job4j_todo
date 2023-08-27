@@ -69,6 +69,10 @@
                             </td>
                         </div>
                         <div>Приоритет: <span th:text="${task.priority.name}"></span></div>
+                        <div>Категории:</div>
+                        <ul id="categories">
+                            <li th:each="category : ${task.categories}" th:text="${category.name}"></li>
+                        </ul>
                     </div>
                 </div>
             </div>

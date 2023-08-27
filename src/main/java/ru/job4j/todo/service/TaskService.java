@@ -2,8 +2,10 @@ package ru.job4j.todo.service;
 
 import net.jcip.annotations.ThreadSafe;
 import org.springframework.stereotype.Service;
+import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Priority;
 import ru.job4j.todo.model.Task;
+import ru.job4j.todo.repository.CategoryRepository;
 import ru.job4j.todo.repository.PriorityRepository;
 import ru.job4j.todo.repository.TaskRepository;
 
@@ -18,10 +20,14 @@ import java.util.Optional;
 public class TaskService {
     private final TaskRepository taskRepository;
     private final PriorityRepository priorityRepository;
+    private final CategoryRepository categoryRepository;
 
-    public TaskService(TaskRepository taskRepository, PriorityRepository priorityRepository) {
+    public TaskService(TaskRepository taskRepository,
+                       PriorityRepository priorityRepository,
+                       CategoryRepository categoryRepository) {
         this.taskRepository = taskRepository;
         this.priorityRepository = priorityRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     /**
@@ -50,9 +56,12 @@ public class TaskService {
 
     /**
      * Добавление новой задачи.
+     * @param task задача.
+     * @param categoryIds список категорий.
      * @return добавленая задача.
      */
-    public Task add(Task task) {
+    public Task add(Task task, List<Integer> categoryIds) {
+        task.setCategories(getCategoriesById(categoryIds));
         return taskRepository.add(task);
     }
 
@@ -87,4 +96,21 @@ public class TaskService {
     public List<Priority> getPriorities() {
         return priorityRepository.getPriorities();
     }
+
+    /**
+     * Получение категорий.
+     * @return категории.
+     */
+    public List<Category> getCategories() {
+        return categoryRepository.findAll();
+    }
+
+    /**
+     * Получение категории по списку ID.
+     * @return категории.
+     */
+    public List<Category> getCategoriesById(List<Integer> ids) {
+        return categoryRepository.findByIds(ids);
+    }
+
 }
