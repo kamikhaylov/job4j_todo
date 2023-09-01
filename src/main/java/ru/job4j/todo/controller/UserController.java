@@ -36,7 +36,8 @@ public class UserController {
     @GetMapping("/formAdd")
     public String addUser(Model model) {
         LOGGER.info("Добавление пользователя");
-        model.addAttribute("user", new User(0, "", "", ""));
+        model.addAttribute("timeZones", userService.getTimeZones());
+        model.addAttribute("user", new User(0, "", "", "", ""));
         return "users/create";
     }
 

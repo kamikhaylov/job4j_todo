@@ -44,8 +44,8 @@ class TodoUserRepositoryTest {
     @Test()
     public void whenAdd() {
         UserRepository store = new TodoUserRepository(crudRepository);
-        User user1 = new User(0, "user1", "login1", "123");
-        User user2 = new User(1, "user2", "login2", "321");
+        User user1 = new User(0, "user1", "login1", "123", null);
+        User user2 = new User(1, "user2", "login2", "321", null);
 
         Optional<User> addResult1 = store.add(user1);
         Optional<User> addResult2 = store.add(user2);
@@ -67,8 +67,8 @@ class TodoUserRepositoryTest {
     @Test()
     public void whenAddUserThenFail() {
         UserRepository store = new TodoUserRepository(crudRepository);
-        User user1 = new User(0, "user1", "login", "123");
-        User user2 = new User(1, "user2", "login", "321");
+        User user1 = new User(0, "user1", "login", "123", null);
+        User user2 = new User(1, "user2", "login", "321", null);
 
         Optional<User> addResult1 = store.add(user1);
         Optional<User> addResult2 = store.add(user2);
@@ -87,8 +87,8 @@ class TodoUserRepositoryTest {
     @Test()
     public void whenFindUser() {
         UserRepository store = new TodoUserRepository(crudRepository);
-        User user1 = new User(0, "user1", "login1", "123");
-        User user2 = new User(1, "user2", "login2", "321");
+        User user1 = new User(0, "user1", "login1", "123", null);
+        User user2 = new User(1, "user2", "login2", "321", null);
         store.add(user1);
         store.add(user2);
 
@@ -111,7 +111,7 @@ class TodoUserRepositoryTest {
     @MethodSource("userProvider")
     public void whenFindUserFail(String name, String login, String password) {
         UserRepository store = new TodoUserRepository(crudRepository);
-        User user = new User(0, name, login, password);
+        User user = new User(0, name, login, password, null);
         store.add(user);
 
         Optional<User> result = store.findUser(user);

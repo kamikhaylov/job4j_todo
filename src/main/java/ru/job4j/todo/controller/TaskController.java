@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import ru.job4j.todo.common.UserSession;
-import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.TaskService;
@@ -49,7 +48,7 @@ public class TaskController {
         LOGGER.info("Вызов сервиса поиска всех задач");
 
         User user = UserSession.getUser(model, httpSession);
-        List<Task> tasks = service.findAll();
+        List<Task> tasks = service.findAll(user.getTimeZone());
         model.addAttribute("tasks", tasks);
         model.addAttribute("user", user);
 

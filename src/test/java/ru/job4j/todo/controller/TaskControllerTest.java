@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 
 class TaskControllerTest {
     private static final int ID_TEST = 1;
-    private static final User USER = new User(1, "User", "login", "pass");
+    private static final User USER = new User(1, "User", "login", "pass", null);
     private static final Priority PRIORITY = new Priority(1, "Средний", 2);
     private static final List<Category> CATEGORIES = List.of(new Category(1, "Разработка"));
     private static final List<Integer> CATEGORY_IDS = List.of(1);
@@ -53,7 +53,7 @@ class TaskControllerTest {
                 new Task(1, "Task_01", LocalDateTime.now(), false, USER, PRIORITY, CATEGORIES),
                 new Task(2, "Task_02", LocalDateTime.now(), true, USER, PRIORITY, CATEGORIES)
         );
-        when(service.findAll()).thenReturn(tasks);
+        when(service.findAll(null)).thenReturn(tasks);
         TaskController controller = new TaskController(service);
         String page = controller.tasks(model, httpSession);
 

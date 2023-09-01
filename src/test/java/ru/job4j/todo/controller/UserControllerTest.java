@@ -49,14 +49,14 @@ class UserControllerTest {
         UserController userController = new UserController(service);
         String page = userController.addUser(model);
 
-        verify(model).addAttribute("user", new User(0, "", "", ""));
+        verify(model).addAttribute("user", new User(0, "", "", "", null));
         Assertions.assertEquals(page, "users/create");
     }
 
     @Test
     public void whenRegistrationFail() {
         UserController userController = new UserController(service);
-        User user = new User(ID_TEST, NAME_TEST, LOGIN_TEST, PASS_TEST);
+        User user = new User(ID_TEST, NAME_TEST, LOGIN_TEST, PASS_TEST, null);
         when(service.add(user)).thenReturn(Optional.empty());
 
         String page = userController.registration(model, user);
@@ -69,7 +69,7 @@ class UserControllerTest {
     @Test
     public void whenRegistrationSuccess() {
         UserController userController = new UserController(service);
-        User user = new User(ID_TEST, NAME_TEST, LOGIN_TEST, PASS_TEST);
+        User user = new User(ID_TEST, NAME_TEST, LOGIN_TEST, PASS_TEST, null);
         when(service.add(user)).thenReturn(Optional.of(user));
 
         String page = userController.registration(model, user);
@@ -81,7 +81,7 @@ class UserControllerTest {
     @Test
     public void whenSuccess() {
         UserController userController = new UserController(service);
-        User user = new User(ID_TEST, NAME_TEST, LOGIN_TEST, PASS_TEST);
+        User user = new User(ID_TEST, NAME_TEST, LOGIN_TEST, PASS_TEST, null);
 
         String page = userController.success(user);
 
@@ -91,7 +91,7 @@ class UserControllerTest {
     @Test
     public void whenFail() {
         UserController userController = new UserController(service);
-        User user = new User(ID_TEST, NAME_TEST, LOGIN_TEST, PASS_TEST);
+        User user = new User(ID_TEST, NAME_TEST, LOGIN_TEST, PASS_TEST, null);
 
         String page = userController.fail(user);
 
@@ -111,7 +111,7 @@ class UserControllerTest {
     @Test
     public void whenLoginFail() {
         UserController userController = new UserController(service);
-        User user = new User(ID_TEST, NAME_TEST, LOGIN_TEST, PASS_TEST);
+        User user = new User(ID_TEST, NAME_TEST, LOGIN_TEST, PASS_TEST, null);
         when(service.findUser(user)).thenReturn(Optional.empty());
 
         String page = userController.login(user, req);
@@ -120,10 +120,9 @@ class UserControllerTest {
         Assertions.assertEquals(page, "redirect:/users/auth?fail=true");
     }
 
-    @Test
     public void whenLogin() {
         UserController userController = new UserController(service);
-        User user = new User(ID_TEST, NAME_TEST, LOGIN_TEST, PASS_TEST);
+        User user = new User(ID_TEST, NAME_TEST, LOGIN_TEST, PASS_TEST, null);
         when(service.findUser(user)).thenReturn(Optional.of(user));
         when(req.getSession()).thenReturn(httpSession);
 

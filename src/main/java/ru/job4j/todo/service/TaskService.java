@@ -2,6 +2,7 @@ package ru.job4j.todo.service;
 
 import net.jcip.annotations.ThreadSafe;
 import org.springframework.stereotype.Service;
+import ru.job4j.todo.common.TaskModifier;
 import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Priority;
 import ru.job4j.todo.model.Task;
@@ -11,6 +12,7 @@ import ru.job4j.todo.repository.TaskRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Сервис задач
@@ -21,6 +23,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final PriorityRepository priorityRepository;
     private final CategoryRepository categoryRepository;
+    private final TaskModifier converterResponse;
 
     public TaskService(TaskRepository taskRepository,
                        PriorityRepository priorityRepository,
@@ -28,6 +31,7 @@ public class TaskService {
         this.taskRepository = taskRepository;
         this.priorityRepository = priorityRepository;
         this.categoryRepository = categoryRepository;
+        this.converterResponse = new TaskModifier();
     }
 
     /**
@@ -36,6 +40,17 @@ public class TaskService {
      */
     public List<Task> findAll() {
         return taskRepository.findAll();
+    }
+
+    /**
+     * Получение списка задач.
+     * @return список задач.
+     */
+    public List<Task> findAll(String timezone) {
+        List<Task> result = taskRepository.findAll();
+        return result.stream()
+                .map(task -> converterResponse.modify(task, timezone))
+                .collect(Collectors.toList());
     }
 
     /**

@@ -16,6 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class UserSessionTest {
+
     @Mock
     private Model model;
     @Mock
@@ -33,7 +34,7 @@ class UserSessionTest {
 
     @Test
     public void whenGetUser() {
-        User user = new User(0, "user1", "login1", "123");
+        User user = new User(0, "user1", "login1", "123", null);
         when(httpSession.getAttribute("user")).thenReturn(user);
 
         User actual = UserSession.getUser(model, httpSession);
@@ -44,7 +45,7 @@ class UserSessionTest {
 
     @Test
     public void whenGetGuest() {
-        User user = new User(0, "guest", null, null);
+        User user = new User(0, "guest", null, null, null);
         when(httpSession.getAttribute("user")).thenReturn(null);
 
         User actual = UserSession.getUser(model, httpSession);

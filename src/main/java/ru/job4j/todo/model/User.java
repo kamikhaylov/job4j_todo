@@ -1,7 +1,6 @@
 package ru.job4j.todo.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,14 +35,21 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
+
     /** Имя */
     @Column(name = "name")
     private String name;
+
     /** Логин */
     @EqualsAndHashCode.Include
     @Column(name = "login")
     private String login;
+
     /** Пароль */
     @Column(name = "password")
     private String password;
+
+    /** Часовой пояс пользователя */
+    @Column(name = "user_zone")
+    private String timeZone;
 }

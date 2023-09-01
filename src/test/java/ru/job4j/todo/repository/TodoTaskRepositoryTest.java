@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 class TodoTaskRepositoryTest {
-    private static final User USER = new User(1, "User", "login", "pass");
+    private static final User USER = new User(1, "User", "login", "pass", null);
     private static final Priority PRIORITY = new Priority(1, "Средний", 2);
     private static final List<Category> CATEGORIES = List.of(new Category(1, "Разработка"));
 
