@@ -120,6 +120,7 @@ class UserControllerTest {
         Assertions.assertEquals(page, "redirect:/users/auth?fail=true");
     }
 
+    @Test
     public void whenLogin() {
         UserController userController = new UserController(service);
         User user = new User(ID_TEST, NAME_TEST, LOGIN_TEST, PASS_TEST, null);

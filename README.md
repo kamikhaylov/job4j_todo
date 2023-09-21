@@ -1,6 +1,8 @@
 # job4j_todo
 ### Проект "Список задач"
 
+[![github actions][actions-image]][actions-url]
+
 Веб приложение на языке Java с библиотекой Spring boot.
 
 Сайт по ведению дел. Главная страница со списком всех заданий. В таблице отображается имя, дата создания и состояние задание (выполнено или нет).
@@ -75,3 +77,6 @@
 
 ### Контакты
 kanmikhaylov@gmail.com
+
+[actions-image]: https://github.com/kamikhaylov/job4j_cars/actions/workflows/maven.yml/badge.svg
+[actions-url]: https://github.com/kamikhaylov/job4j_cars/actions/workflows/maven.yml
