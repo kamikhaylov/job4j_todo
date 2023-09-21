@@ -2,6 +2,7 @@
 ### Проект "Список задач"
 
 [![github actions][actions-image]][actions-url]
+[![coverage][codecov-image]][codecov-url]
 
 Веб приложение на языке Java с библиотекой Spring boot.
 
@@ -80,3 +81,5 @@ kanmikhaylov@gmail.com
 
 [actions-image]: https://github.com/kamikhaylov/job4j_cars/actions/workflows/maven.yml/badge.svg
 [actions-url]: https://github.com/kamikhaylov/job4j_cars/actions/workflows/maven.yml
+[codecov-image]: https://codecov.io/gh/kamikhaylov/job4j_todo/graph/badge.svg?token=Y4ADW1VW7X
+[codecov-url]: https://codecov.io/gh/kamikhaylov/job4j_todo
