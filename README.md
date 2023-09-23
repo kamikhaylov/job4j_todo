@@ -79,7 +79,7 @@
 ### Контакты
 kanmikhaylov@gmail.com
 
-[actions-image]: https://github.com/kamikhaylov/job4j_cars/actions/workflows/maven.yml/badge.svg
-[actions-url]: https://github.com/kamikhaylov/job4j_cars/actions/workflows/maven.yml
+[actions-image]: https://github.com/kamikhaylov/job4j_todo/actions/workflows/maven.yml/badge.svg
+[actions-url]: https://github.com/kamikhaylov/job4j_todo/actions/workflows/maven.yml
 [codecov-image]: https://codecov.io/gh/kamikhaylov/job4j_todo/graph/badge.svg?token=Y4ADW1VW7X
 [codecov-url]: https://codecov.io/gh/kamikhaylov/job4j_todo
