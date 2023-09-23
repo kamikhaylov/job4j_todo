@@ -37,6 +37,10 @@
 - Запустить приложение из папки target, выполнив команду: `java -jar job4j_todo-1.0-SNAPSHOT.jar`
 - Перейти в браузере по ссылке `http://localhost:8080/todo`
 
+### Таблицы PostgreSQL DB
+Таблицы базы данных написаны с помощью Liquibase. Схема БД:
+![diagram-db.png](readme/images/diagram-db.png)
+
 ### Главная страница, форма со всеми задачами
 ![tasks.png](readme/images/tasks.png)
 
